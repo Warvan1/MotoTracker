@@ -9,7 +9,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -18,13 +17,12 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
-import com.google.android.material.internal.NavigationMenuItemView;
 import com.google.android.material.navigation.NavigationView;
 
 public class MainActivity extends AppCompatActivity {
-    DrawerLayout _drawerLayout;
-    Toolbar _toolbar;
-    NavigationView _navigationView;
+    public DrawerLayout _drawerLayout;
+    public Toolbar _toolbar;
+    public NavigationView _navigationView;
 
     private Auth0Authentication _auth0;
     private JSONObjectWrapper _userProfile;
@@ -117,8 +115,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void handleAuth(){
-        Menu menu = _navigationView.getMenu();
-        MenuItem menuItem = menu.findItem(R.id.login);
+        MenuItem menuItem = _navigationView.getMenu().findItem(R.id.login);
         TextView emailT = findViewById(R.id.drawer_header_email);
         if(_auth0.isAuthenticated()){
             if(_userProfile == null){
@@ -143,5 +140,17 @@ public class MainActivity extends AppCompatActivity {
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         transaction.replace(R.id.flFragment, fragment);
         transaction.commit();
+
+        //handle updating the menu checked state when switching fragments
+        Menu menu = _navigationView.getMenu();
+        for (int i = 0; i < menu.size(); i++){
+            menu.getItem(i).setChecked(false);
+        }
+        if(fragment instanceof HomeFragment){
+            menu.findItem(R.id.home).setChecked(true);
+        }
+        else if(fragment instanceof DashboardFragment){
+            menu.findItem(R.id.dashboard).setChecked(true);
+        }
     }
 }

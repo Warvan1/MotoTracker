@@ -4,15 +4,15 @@ import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
 
-import android.util.AndroidRuntimeException;
-import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.auth0.android.authentication.AuthenticationException;
+import com.google.android.material.navigation.NavigationView;
+
+import java.util.Objects;
 
 public class DashboardFragment extends Fragment {
     private Auth0Authentication _auth0;
@@ -46,5 +46,18 @@ public class DashboardFragment extends Fragment {
     private void fragmentSwitcher(Fragment fragment){
         FragmentManager fragmentManager = getParentFragmentManager();
         fragmentManager.beginTransaction().replace(R.id.flFragment, fragment).addToBackStack(null).commit();
+
+        //handle updating the menu checked state when switching fragments
+        NavigationView navigationView = requireActivity().findViewById(R.id.nav);
+        Menu menu = navigationView.getMenu();
+        for (int i = 0; i < menu.size(); i++){
+            menu.getItem(i).setChecked(false);
+        }
+        if(fragment instanceof HomeFragment){
+            menu.findItem(R.id.home).setChecked(true);
+        }
+        else if(fragment instanceof DashboardFragment){
+            menu.findItem(R.id.dashboard).setChecked(true);
+        }
     }
 }
