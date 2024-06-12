@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:showIn="navigation_view">
+
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/home"
+            android:title="@string/home"/>
+
+        <item
+            android:id="@+id/dashboard"
+            android:title="@string/dashboard"/>
+
+        <item
+            android:id="@+id/maintenanceLog"
+            android:title="@string/maintenanceLog"/>
+
+        <item
+            android:id="@+id/statistics"
+            android:title="@string/statistics"/>
+
+    </group>
+
+    <item android:title="@string/accountProfile">
+
+        <menu>
+            <item
+                android:id="@+id/login"
+                android:title="@string/login"/>
+
+            <item
+                android:id="@+id/settings"
+                android:title="@string/settings"/>
+
+            <item
+                android:id="@+id/carManager"
+                android:title="@string/carManager"/>
+
+        </menu>
+    </item>
+</menu>
