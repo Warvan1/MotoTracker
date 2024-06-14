@@ -47,10 +47,7 @@ public class Auth0Authentication {
         _auth0 = new Auth0(_context);
     }
     public String getAccessToken(){
-        return _accessToken;
-    }
-    public String getTokenType(){
-        return _tokenType;
+        return String.format("%s %s", _tokenType, _accessToken);
     }
     public JSONObjectWrapper getUserProfile(){
         return _userProfile;
@@ -129,12 +126,8 @@ public class Auth0Authentication {
                     @Override
                     public void onSuccess(UserProfile userProfile) {
                         _userProfile = new JSONObjectWrapper();
-                        _userProfile.put("sub", userProfile.getId());
-                        _userProfile.put("nickname", userProfile.getNickname());
+                        _userProfile.put("user_id", userProfile.getId());
                         _userProfile.put("picture", userProfile.getPictureURL());
-                        if (userProfile.getCreatedAt() != null) {
-                            _userProfile.put("created_at", userProfile.getCreatedAt().toString());
-                        }
                         _userProfile.put("email", userProfile.getEmail());
                         _userProfile.put("email_verified", Boolean.TRUE.equals(userProfile.isEmailVerified()));
 

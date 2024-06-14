@@ -5,6 +5,7 @@ import android.os.Bundle;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.View;
@@ -39,6 +40,13 @@ public class DashboardFragment extends Fragment {
             fragmentSwitcher(new HomeFragment());
         }
         _userProfile = _auth0.getUserProfile();
+
+        //retrieve user data from the database
+        new HTTPRequest(getString(R.string.api_base_url) + "/getuser")
+                .setAuthToken(_auth0.getAccessToken(), _userProfile.getString("user_id")).setCallback(res -> {
+                    JSONObjectWrapper resJSON = new JSONObjectWrapper(res);
+                    Log.d("code", "user: " + resJSON.getString("email"));
+                }).runAsync();
 
         return view;
     }

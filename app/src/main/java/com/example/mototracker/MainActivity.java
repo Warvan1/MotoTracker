@@ -53,15 +53,6 @@ public class MainActivity extends AppCompatActivity {
         //set the initial fragment to the home fragment
         fragmentSwitcher(new HomeFragment());
 
-        //create a drawer listener to callback drawer opening and other events
-        _drawerLayout.addDrawerListener(new DrawerLayout.SimpleDrawerListener() {
-            @Override
-            public void onDrawerOpened(View drawerView) {
-                super.onDrawerOpened(drawerView);
-                handleAuth();
-            }
-        });
-
         //listener for when a item is selected in the drawer menu
         _navigationView.setNavigationItemSelectedListener(menuItem -> {
             //close the menu after selecting an option
@@ -93,14 +84,6 @@ public class MainActivity extends AppCompatActivity {
                 Log.d("code", "login");
                 _auth0.handleLoginOrLogout(v -> {
                     handleAuth();
-                    //we are doing this not in the handleAuth function because we only want it to run on initial login
-                    if(_auth0.isAuthenticated()) {
-                        //switch to the dashboard fragment on login if we are on the home fragment
-                        Fragment currentFragment = getSupportFragmentManager().findFragmentById(R.id.flFragment);
-                        if(currentFragment instanceof HomeFragment) {
-                            fragmentSwitcher(new DashboardFragment());
-                        }
-                    }
                 });
             }
             else if (menuID == R.id.settings) {
@@ -118,11 +101,17 @@ public class MainActivity extends AppCompatActivity {
         MenuItem menuItem = _navigationView.getMenu().findItem(R.id.login);
         TextView emailT = findViewById(R.id.drawer_header_email);
         if(_auth0.isAuthenticated()){
-            if(_userProfile == null){
-                _userProfile = _auth0.getUserProfile();
-            }
+            _userProfile = _auth0.getUserProfile();
             emailT.setText(_userProfile.getString("email"));
             menuItem.setTitle(R.string.logout);
+            //make an adduser post request
+            new HTTPRequest(getString(R.string.api_base_url) + "/adduser").setMethod("POST")
+                    .setAuthToken(_auth0.getAccessToken()).setData(_userProfile.toString()).runAsync();
+            //switch to the dashboard fragment on login if we are on the home fragment
+            Fragment currentFragment = getSupportFragmentManager().findFragmentById(R.id.flFragment);
+            if(currentFragment instanceof HomeFragment) {
+                fragmentSwitcher(new DashboardFragment());
+            }
         }
         else{
             _userProfile = null;
