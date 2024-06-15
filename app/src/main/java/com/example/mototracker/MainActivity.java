@@ -2,9 +2,7 @@ package com.example.mototracker;
 
 import android.os.Bundle;
 import android.util.Log;
-import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -15,15 +13,14 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentTransaction;
 
 import com.google.android.material.navigation.NavigationView;
 
 public class MainActivity extends AppCompatActivity {
-    public DrawerLayout _drawerLayout;
-    public Toolbar _toolbar;
-    public NavigationView _navigationView;
-
+    private DrawerLayout _drawerLayout;
+    private Toolbar _toolbar;
+    private NavigationView _navigationView;
+    private FragmentSwitcher _fragmentSwitcher;
     private Auth0Authentication _auth0;
     private JSONObjectWrapper _userProfile;
 
@@ -50,8 +47,11 @@ public class MainActivity extends AppCompatActivity {
         //set the hamburger menu color
         toggle.getDrawerArrowDrawable().setColor(getResources().getColor(R.color.md_theme_primary));
 
+        //initialize the fragment switcher object
+        _fragmentSwitcher = FragmentSwitcher.createInstance(_navigationView.getMenu());
+
         //set the initial fragment to the home fragment
-        fragmentSwitcher(new HomeFragment());
+        _fragmentSwitcher.switchFragment(new HomeFragment(), getSupportFragmentManager());
 
         //listener for when a item is selected in the drawer menu
         _navigationView.setNavigationItemSelectedListener(menuItem -> {
@@ -63,12 +63,12 @@ public class MainActivity extends AppCompatActivity {
             //handle all the different menu options
             if(menuID == R.id.home){
                 Log.d("code", "home");
-                fragmentSwitcher(new HomeFragment());
+                _fragmentSwitcher.switchFragment(new HomeFragment(), getSupportFragmentManager());
             }
             else if (menuID == R.id.dashboard) {
                 Log.d("code", "dashboard");
                 if(_auth0.isAuthenticated()){
-                    fragmentSwitcher(new DashboardFragment());
+                    _fragmentSwitcher.switchFragment(new DashboardFragment(), getSupportFragmentManager());
                 }
                 else{
                     Toast.makeText(this, "Login to view Dashboard", Toast.LENGTH_LONG).show();
@@ -91,6 +91,12 @@ public class MainActivity extends AppCompatActivity {
             }
             else if (menuID == R.id.carManager) {
                 Log.d("code", "Car Manager");
+                if(_auth0.isAuthenticated()){
+                    _fragmentSwitcher.switchFragment(new CarManagerFragment(), getSupportFragmentManager());
+                }
+                else{
+                    Toast.makeText(this, "Login to view Car Manager Fragment", Toast.LENGTH_LONG).show();
+                }
             }
 
             return true;
@@ -110,7 +116,7 @@ public class MainActivity extends AppCompatActivity {
             //switch to the dashboard fragment on login if we are on the home fragment
             Fragment currentFragment = getSupportFragmentManager().findFragmentById(R.id.flFragment);
             if(currentFragment instanceof HomeFragment) {
-                fragmentSwitcher(new DashboardFragment());
+                _fragmentSwitcher.switchFragment(new DashboardFragment(), getSupportFragmentManager());
             }
         }
         else{
@@ -120,26 +126,8 @@ public class MainActivity extends AppCompatActivity {
             //switch to the home fragment on logout if you are NOT on the home fragment
             Fragment currentFragment = getSupportFragmentManager().findFragmentById(R.id.flFragment);
             if(!(currentFragment instanceof HomeFragment)){
-                fragmentSwitcher(new HomeFragment());
+                _fragmentSwitcher.switchFragment(new HomeFragment(), getSupportFragmentManager());
             }
-        }
-    }
-
-    public void fragmentSwitcher(Fragment fragment){
-        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        transaction.replace(R.id.flFragment, fragment);
-        transaction.commit();
-
-        //handle updating the menu checked state when switching fragments
-        Menu menu = _navigationView.getMenu();
-        for (int i = 0; i < menu.size(); i++){
-            menu.getItem(i).setChecked(false);
-        }
-        if(fragment instanceof HomeFragment){
-            menu.findItem(R.id.home).setChecked(true);
-        }
-        else if(fragment instanceof DashboardFragment){
-            menu.findItem(R.id.dashboard).setChecked(true);
         }
     }
 }

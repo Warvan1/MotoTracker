@@ -22,7 +22,9 @@
 
     </group>
 
-    <item android:title="@string/accountProfile">
+    <item
+        android:id="@+id/accountProfile"
+        android:title="@string/accountProfile">
 
         <menu>
             <item
