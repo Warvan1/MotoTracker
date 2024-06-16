@@ -56,24 +56,20 @@ public class CarManagerFragment extends Fragment implements recyclerViewInterfac
         new HTTPRequest(getString(R.string.api_base_url) + "/getcars")
                 .setAuthToken(_auth0.getAccessToken(), _userProfile.getString("user_id"))
                 .setCallback(res -> {
-                    _carModels = new JSONArrayWrapper(res);
+                    JSONObjectWrapper resJson = new JSONObjectWrapper(res);
+                    _carModels = resJson.getJSONArrayWrapper("cars");
                     //add a current_car value to all of the car models
                     for(int i = 0; i < _carModels.length(); i++){
                         _carModels.getJSONObjectWrapper(i).put("current_car", false);
                     }
+
                     //create an adapter for our recycler view using the retrieved data
                     _adapter = new CarManagerRecyclerViewAdapter(this.getContext(), _carModels, this);
                     _recyclerView.setAdapter(_adapter);
                     _recyclerView.setLayoutManager(new LinearLayoutManager(this.getContext()));
 
-                    //get the current car id
-                    new HTTPRequest(getString(R.string.api_base_url) + "/getcurrentcarid")
-                            .setAuthToken(_auth0.getAccessToken(), _userProfile.getString("user_id"))
-                            .setCallback(res2 -> {
-                                JSONObjectWrapper res2JSON = new JSONObjectWrapper(res2);
-                                //highlight the current Car
-                                highlightCurrentCar(res2JSON.getInt("current_car"));
-                            }).runAsync();
+                    //highlight the current Car
+                    highlightCurrentCar(resJson.getInt("current_car"));
                 }).runAsync();
 
         //add car dialog form view
