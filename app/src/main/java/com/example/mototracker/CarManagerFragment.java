@@ -4,6 +4,8 @@ import android.app.Dialog;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -14,12 +16,13 @@ import android.widget.EditText;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
-public class CarManagerFragment extends Fragment {
+public class CarManagerFragment extends Fragment implements recyclerViewInterface {
     private Auth0Authentication _auth0;
     private JSONObjectWrapper _userProfile;
     private FragmentSwitcher _fragmentSwitcher;
-
-    private JSONArrayWrapper _cars;
+    private JSONArrayWrapper _carModels;
+    private RecyclerView _recyclerView;
+    private CarManagerRecyclerViewAdapter _adapter;
 
     public CarManagerFragment() {
         // Required empty public constructor
@@ -47,12 +50,30 @@ public class CarManagerFragment extends Fragment {
         }
         _userProfile = _auth0.getUserProfile();
 
+        //get our recyclerView for our adapter
+        _recyclerView = view.findViewById(R.id.car_manager_recycler_view);
         //retrieve all cars for the user
         new HTTPRequest(getString(R.string.api_base_url) + "/getcars")
                 .setAuthToken(_auth0.getAccessToken(), _userProfile.getString("user_id"))
                 .setCallback(res -> {
-                    _cars = new JSONArrayWrapper(res);
-                    Log.d("cars", "onCreateView: " + _cars);
+                    _carModels = new JSONArrayWrapper(res);
+                    //add a current_car value to all of the car models
+                    for(int i = 0; i < _carModels.length(); i++){
+                        _carModels.getJSONObjectWrapper(i).put("current_car", false);
+                    }
+                    //create an adapter for our recycler view using the retrieved data
+                    _adapter = new CarManagerRecyclerViewAdapter(this.getContext(), _carModels, this);
+                    _recyclerView.setAdapter(_adapter);
+                    _recyclerView.setLayoutManager(new LinearLayoutManager(this.getContext()));
+
+                    //get the current car id
+                    new HTTPRequest(getString(R.string.api_base_url) + "/getcurrentcarid")
+                            .setAuthToken(_auth0.getAccessToken(), _userProfile.getString("user_id"))
+                            .setCallback(res2 -> {
+                                JSONObjectWrapper res2JSON = new JSONObjectWrapper(res2);
+                                //highlight the current Car
+                                highlightCurrentCar(res2JSON.getInt("current_car"));
+                            }).runAsync();
                 }).runAsync();
 
         //add car dialog form view
@@ -92,11 +113,45 @@ public class CarManagerFragment extends Fragment {
                 //send new car object to the server
                 new HTTPRequest(getString(R.string.api_base_url) + "/addcar").setMethod("POST")
                         .setAuthToken(_auth0.getAccessToken(), _userProfile.getString("user_id"))
-                        .setData(addCarJSON.toString()).runAsync();
+                        .setData(addCarJSON.toString()).setCallback(res -> {
+                            //remove all current car highlights
+                            highlightCurrentCar(0);
+                            //add car model from server to our recycler view
+                            JSONObjectWrapper carModel = new JSONObjectWrapper(res);
+                            carModel.put("current_car", true);
+                            _carModels.put(carModel);
+                            _adapter.notifyItemInserted(_carModels.length());
+                        }).runAsync();
             });
-
         });
-
         return view;
     }
+
+    @Override
+    public void onItemClick(int position) {
+        int car_id = _carModels.getJSONObjectWrapper(position).getInt("car_id");
+        JSONObjectWrapper car_idJSON = new JSONObjectWrapper();
+        car_idJSON.put("car_id", car_id);
+
+        //highlight the clicked car
+        highlightCurrentCar(car_id);
+
+        new HTTPRequest(getString(R.string.api_base_url) + "/setcurrentcar").setMethod("POST")
+                .setAuthToken(_auth0.getAccessToken(), _userProfile.getString("user_id"))
+                .setData(car_idJSON.toString()).runAsync();
+    }
+
+    public void highlightCurrentCar(int currentCar){
+        for(int i = 0; i < _carModels.length(); i++){
+            if(_carModels.getJSONObjectWrapper(i).getBoolean("current_car")){
+                _carModels.getJSONObjectWrapper(i).put("current_car", false);
+                _adapter.notifyItemChanged(i);
+            }
+            if(_carModels.getJSONObjectWrapper(i).getInt("car_id") == currentCar){
+                _carModels.getJSONObjectWrapper(i).put("current_car", true);
+                _adapter.notifyItemChanged(i);
+            }
+        }
+    }
+
 }

@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/car_manager_row_card"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp"
+        app:cardCornerRadius="20dp"
+        app:cardElevation="8dp"
+        app:cardBackgroundColor="@color/md_theme_primaryContainer_mediumContrast"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" >
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <TextView
+                android:id="@+id/car_manager_row_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/nickname"
+                android:textSize="24sp"
+                android:paddingTop="16dp"
+                android:paddingStart="16dp"
+                android:paddingEnd="16dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/car_manager_row_selected"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/selectedParentheses"
+                android:textSize="16sp"
+                android:paddingTop="16dp"
+                app:layout_constraintStart_toEndOf="@id/car_manager_row_name"
+                app:layout_constraintTop_toTopOf="@id/car_manager_row_name" />
+
+            <TextView
+                android:id="@+id/car_manager_row_year"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/year"
+                android:textSize="16sp"
+                android:paddingTop="16dp"
+                android:paddingStart="16dp"
+                android:paddingEnd="16dp"
+                app:layout_constraintStart_toStartOf="@id/car_manager_row_name"
+                app:layout_constraintTop_toBottomOf="@id/car_manager_row_name" />
+
+            <TextView
+                android:id="@+id/car_manager_row_make"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/make"
+                android:textSize="16sp"
+                android:paddingTop="16dp"
+                android:paddingStart="16dp"
+                android:paddingEnd="16dp"
+                app:layout_constraintStart_toEndOf="@id/car_manager_row_year"
+                app:layout_constraintTop_toBottomOf="@id/car_manager_row_name" />
+
+            <TextView
+                android:id="@+id/car_manager_row_model"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/model"
+                android:textSize="16sp"
+                android:paddingTop="16dp"
+                android:paddingStart="16dp"
+                android:paddingEnd="16dp"
+                app:layout_constraintStart_toEndOf="@id/car_manager_row_make"
+                app:layout_constraintTop_toBottomOf="@id/car_manager_row_name" />
+
+            <TextView
+                android:id="@+id/car_manager_row_milage_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/milageColin"
+                android:textSize="16sp"
+                android:paddingTop="16dp"
+                android:paddingStart="16dp"
+                android:paddingEnd="0dp"
+                android:paddingBottom="16dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/car_manager_row_year" />
+
+            <TextView
+                android:id="@+id/car_manager_row_milage"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/milage"
+                android:textSize="16sp"
+                android:padding="16dp"
+                app:layout_constraintStart_toEndOf="@+id/car_manager_row_milage_title"
+                app:layout_constraintTop_toBottomOf="@id/car_manager_row_year" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.cardview.widget.CardView>
+</androidx.constraintlayout.widget.ConstraintLayout>

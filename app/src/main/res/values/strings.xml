@@ -19,4 +19,6 @@
     <string name="make">Make</string>
     <string name="model">Model</string>
     <string name="milage">Milage</string>
+    <string name="milageColin">Milage:</string>
+    <string name="selectedParentheses">(Selected)</string>
 </resources>
