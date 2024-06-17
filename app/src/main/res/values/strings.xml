@@ -14,11 +14,14 @@
     <string name="emailPlaceholder">example@example.com</string>
     <string name="add">Add</string>
     <string name="addCar">Add Car</string>
-    <string name="nickname">Nickname</string>
+    <string name="name">Name</string>
     <string name="year">Year</string>
     <string name="make">Make</string>
     <string name="model">Model</string>
-    <string name="milage">Milage</string>
-    <string name="milageColin">Milage:</string>
+    <string name="miles">Miles</string>
+    <string name="milesColin">Miles:</string>
     <string name="selectedParentheses">(Selected)</string>
+    <string name="deleteConfirmation">Are you sure you want to Delete?</string>
+    <string name="deleteConfirmation2">Type Car Name to Confirm.</string>
+    <string name="deleteCarForever">Delete Car Forever</string>
 </resources>

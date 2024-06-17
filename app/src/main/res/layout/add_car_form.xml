@@ -17,7 +17,7 @@
             android:layout_height="wrap_content"
             android:width="110dp"
             android:textSize="20sp"
-            android:text="@string/nickname"/>
+            android:text="@string/name"/>
 
         <EditText
             android:id="@+id/add_car_name"
@@ -113,10 +113,10 @@
             android:layout_height="wrap_content"
             android:width="110dp"
             android:textSize="20sp"
-            android:text="@string/milage"/>
+            android:text="@string/miles"/>
 
         <EditText
-            android:id="@+id/add_car_milage"
+            android:id="@+id/add_car_miles"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:inputType="number"

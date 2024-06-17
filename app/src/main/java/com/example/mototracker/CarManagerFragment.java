@@ -13,6 +13,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
@@ -87,7 +88,7 @@ public class CarManagerFragment extends Fragment implements recyclerViewInterfac
             EditText year = viewAddCarForm.findViewById(R.id.add_car_year);
             EditText make = viewAddCarForm.findViewById(R.id.add_car_make);
             EditText model = viewAddCarForm.findViewById(R.id.add_car_model);
-            EditText milage = viewAddCarForm.findViewById(R.id.add_car_milage);
+            EditText miles = viewAddCarForm.findViewById(R.id.add_car_miles);
 
             //add car button onclick listener
             Button addCarSubmitButton = viewAddCarForm.findViewById(R.id.add_car_submit_btn);
@@ -103,7 +104,7 @@ public class CarManagerFragment extends Fragment implements recyclerViewInterfac
                 addCarJSON.put("year", Integer.parseInt(year.getText().toString()));
                 addCarJSON.put("make", make.getText().toString());
                 addCarJSON.put("model", model.getText().toString());
-                addCarJSON.put("milage", Integer.parseInt(milage.getText().toString()));
+                addCarJSON.put("miles", Integer.parseInt(miles.getText().toString()));
                 addCarJSON.put("picture", "");
 
                 //send new car object to the server
@@ -126,15 +127,42 @@ public class CarManagerFragment extends Fragment implements recyclerViewInterfac
     @Override
     public void onItemClick(int position) {
         int car_id = _carModels.getJSONObjectWrapper(position).getInt("car_id");
-        JSONObjectWrapper car_idJSON = new JSONObjectWrapper();
-        car_idJSON.put("car_id", car_id);
 
         //highlight the clicked car
         highlightCurrentCar(car_id);
 
-        new HTTPRequest(getString(R.string.api_base_url) + "/setcurrentcar").setMethod("POST")
-                .setAuthToken(_auth0.getAccessToken(), _userProfile.getString("user_id"))
-                .setData(car_idJSON.toString()).runAsync();
+        new HTTPRequest(getString(R.string.api_base_url) + "/setcurrentcar?car_id=" + car_id)
+                .setAuthToken(_auth0.getAccessToken(), _userProfile.getString("user_id")).runAsync();
+    }
+
+    @Override
+    public void onItemLongClick(int position) {
+        int car_id = _carModels.getJSONObjectWrapper(position).getInt("car_id");
+
+        Dialog viewDeleteCarForm = new Dialog(this.requireContext());
+        viewDeleteCarForm.setContentView(R.layout.delete_car_form);
+        viewDeleteCarForm.show();
+
+        //access form data
+        EditText name = viewDeleteCarForm.findViewById(R.id.delete_car_name);
+
+        //delete car button onClick listener
+        Button deleteCarButton = viewDeleteCarForm.findViewById(R.id.delete_car_forever_btn);
+        deleteCarButton.setOnClickListener(v -> {
+            if(_carModels.getJSONObjectWrapper(position).getString("name").equals(name.getText().toString())){
+                //close the form
+                viewDeleteCarForm.dismiss();
+
+                new HTTPRequest(getString(R.string.api_base_url) + "/deletecar?car_id=" + car_id)
+                        .setAuthToken(_auth0.getAccessToken(), _userProfile.getString("user_id")).runAsync();
+
+                _carModels.remove(position);
+                _adapter.notifyItemRemoved(position);
+            }
+            else{
+                Toast.makeText(this.getContext(), "Did not delete: Make sure name matches car name.", Toast.LENGTH_LONG).show();
+            }
+        });
     }
 
     public void highlightCurrentCar(int currentCar){

@@ -25,7 +25,7 @@
                 android:id="@+id/car_manager_row_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/nickname"
+                android:text="@string/name"
                 android:textSize="24sp"
                 android:paddingTop="16dp"
                 android:paddingStart="16dp"
@@ -80,10 +80,10 @@
                 app:layout_constraintTop_toBottomOf="@id/car_manager_row_name" />
 
             <TextView
-                android:id="@+id/car_manager_row_milage_title"
+                android:id="@+id/car_manager_row_miles_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/milageColin"
+                android:text="@string/milesColin"
                 android:textSize="16sp"
                 android:paddingTop="16dp"
                 android:paddingStart="16dp"
@@ -93,13 +93,13 @@
                 app:layout_constraintTop_toBottomOf="@id/car_manager_row_year" />
 
             <TextView
-                android:id="@+id/car_manager_row_milage"
+                android:id="@+id/car_manager_row_miles"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/milage"
+                android:text="@string/miles"
                 android:textSize="16sp"
                 android:padding="16dp"
-                app:layout_constraintStart_toEndOf="@+id/car_manager_row_milage_title"
+                app:layout_constraintStart_toEndOf="@+id/car_manager_row_miles_title"
                 app:layout_constraintTop_toBottomOf="@id/car_manager_row_year" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>

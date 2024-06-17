@@ -38,7 +38,7 @@ public class CarManagerRecyclerViewAdapter extends RecyclerView.Adapter<CarManag
         holder._yearView.setText(_carModels.getJSONObjectWrapper(position).getString("year"));
         holder._makeView.setText(_carModels.getJSONObjectWrapper(position).getString("make"));
         holder._modelView.setText(_carModels.getJSONObjectWrapper(position).getString("model"));
-        holder._milageView.setText(_carModels.getJSONObjectWrapper(position).getString("milage"));
+        holder._milesView.setText(_carModels.getJSONObjectWrapper(position).getString("miles"));
         //handle currentCar coloring
         if(_carModels.getJSONObjectWrapper(position).getBoolean("current_car")){
             holder._cardView.setCardBackgroundColor(_context.getResources().getColor(R.color.md_theme_tertiaryContainer_mediumContrast));
@@ -62,7 +62,7 @@ public class CarManagerRecyclerViewAdapter extends RecyclerView.Adapter<CarManag
         public TextView _yearView;
         public TextView _makeView;
         public TextView _modelView;
-        public TextView _milageView;
+        public TextView _milesView;
         public TextView _selectedView;
         public CardView _cardView;
 
@@ -72,7 +72,7 @@ public class CarManagerRecyclerViewAdapter extends RecyclerView.Adapter<CarManag
             _yearView = itemView.findViewById(R.id.car_manager_row_year);
             _makeView = itemView.findViewById(R.id.car_manager_row_make);
             _modelView = itemView.findViewById(R.id.car_manager_row_model);
-            _milageView = itemView.findViewById(R.id.car_manager_row_milage);
+            _milesView = itemView.findViewById(R.id.car_manager_row_miles);
             _selectedView = itemView.findViewById(R.id.car_manager_row_selected);
             _cardView = itemView.findViewById(R.id.car_manager_row_card);
 
@@ -82,6 +82,14 @@ public class CarManagerRecyclerViewAdapter extends RecyclerView.Adapter<CarManag
                     if(position != RecyclerView.NO_POSITION){
                         recyclerViewInterface.onItemClick(position);
                     }
+                });
+
+                itemView.setOnLongClickListener(v -> {
+                    int position = getAdapterPosition();
+                    if(position != RecyclerView.NO_POSITION){
+                        recyclerViewInterface.onItemLongClick(position);
+                    }
+                    return true;
                 });
             }
         }
