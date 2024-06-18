@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="service_types_all">
+        <item>All</item>
+        <item>Fuel</item>
+        <item>Maintenance</item>
+        <item>Oil Change</item>
+        <item>Tire Rotation</item>
+        <item>Air Filter</item>
+        <item>Inspection</item>
+        <item>Registration</item>
+    </string-array>
+
+    <string-array name="service_types">
+        <item>Fuel</item>
+        <item>Maintenance</item>
+        <item>Oil Change</item>
+        <item>Tire Rotation</item>
+        <item>Air Filter</item>
+        <item>Inspection</item>
+        <item>Registration</item>
+    </string-array>
+</resources>

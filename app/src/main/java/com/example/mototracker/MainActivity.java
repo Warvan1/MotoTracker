@@ -76,6 +76,12 @@ public class MainActivity extends AppCompatActivity {
             }
             else if (menuID == R.id.maintenanceLog) {
                 Log.d("code", "maintenance log");
+                if(_auth0.isAuthenticated()){
+                    _fragmentSwitcher.switchFragment(new MaintenanceLogFragment(), getSupportFragmentManager());
+                }
+                else{
+                    Toast.makeText(this, "Login to view maintenance Log", Toast.LENGTH_LONG).show();
+                }
             }
             else if (menuID == R.id.statistics) {
                 Log.d("code", "stats");

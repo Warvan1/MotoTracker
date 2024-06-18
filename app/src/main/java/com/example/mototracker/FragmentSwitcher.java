@@ -43,6 +43,9 @@ public class FragmentSwitcher {
         else if(fragment instanceof DashboardFragment){
             _menu.findItem(R.id.dashboard).setChecked(true);
         }
+        else if(fragment instanceof MaintenanceLogFragment){
+            _menu.findItem(R.id.maintenanceLog).setChecked(true);
+        }
         else if(fragment instanceof CarManagerFragment){
             _menu.findItem(R.id.carManager).setChecked(true);
         }

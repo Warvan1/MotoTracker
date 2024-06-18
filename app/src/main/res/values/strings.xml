@@ -24,4 +24,9 @@
     <string name="deleteConfirmation">Are you sure you want to Delete?</string>
     <string name="deleteConfirmation2">Type Car Name to Confirm.</string>
     <string name="deleteCarForever">Delete Car Forever</string>
+    <string name="type">Type</string>
+    <string name="costDollars">Cost $</string>
+    <string name="odometer">Odometer</string>
+    <string name="notes">Notes</string>
+    <string name="addMaintenance">Add Maintenance</string>
 </resources>
