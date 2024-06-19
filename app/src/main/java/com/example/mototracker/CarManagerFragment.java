@@ -7,7 +7,6 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,7 +16,7 @@ import android.widget.Toast;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
-public class CarManagerFragment extends Fragment implements recyclerViewInterface {
+public class CarManagerFragment extends Fragment implements RecyclerViewInterface {
     private Auth0Authentication _auth0;
     private JSONObjectWrapper _userProfile;
     private FragmentSwitcher _fragmentSwitcher;
@@ -53,6 +52,7 @@ public class CarManagerFragment extends Fragment implements recyclerViewInterfac
 
         //get our recyclerView for our adapter
         _recyclerView = view.findViewById(R.id.car_manager_recycler_view);
+
         //retrieve all cars for the user
         new HTTPRequest(getString(R.string.api_base_url) + "/getcars")
                 .setAuthToken(_auth0.getAccessToken(), _userProfile.getString("user_id"))
@@ -73,13 +73,11 @@ public class CarManagerFragment extends Fragment implements recyclerViewInterfac
                     highlightCurrentCar(resJson.getInt("current_car"));
                 }).runAsync();
 
-        //add car dialog form view
-        Dialog viewAddCarForm = new Dialog(this.requireContext());
-
         //floating action button on click method for adding cars
         FloatingActionButton addCarButton = view.findViewById(R.id.add_car_btn);
         addCarButton.setOnClickListener(v -> {
-            //create and show the popup window
+            //create and show add car popup window
+            Dialog viewAddCarForm = new Dialog(this.requireContext());
             viewAddCarForm.setContentView(R.layout.add_car_form);
             viewAddCarForm.show();
 
@@ -90,7 +88,7 @@ public class CarManagerFragment extends Fragment implements recyclerViewInterfac
             EditText model = viewAddCarForm.findViewById(R.id.add_car_model);
             EditText miles = viewAddCarForm.findViewById(R.id.add_car_miles);
 
-            //add car button onclick listener
+            //add car submit button onclick listener
             Button addCarSubmitButton = viewAddCarForm.findViewById(R.id.add_car_submit_btn);
             addCarSubmitButton.setOnClickListener(v2 -> {
                 //TODO: add input validation
@@ -131,6 +129,7 @@ public class CarManagerFragment extends Fragment implements recyclerViewInterfac
         //highlight the clicked car
         highlightCurrentCar(car_id);
 
+        //set the current car id for the user
         new HTTPRequest(getString(R.string.api_base_url) + "/setcurrentcar?car_id=" + car_id)
                 .setAuthToken(_auth0.getAccessToken(), _userProfile.getString("user_id")).runAsync();
     }
@@ -139,6 +138,7 @@ public class CarManagerFragment extends Fragment implements recyclerViewInterfac
     public void onItemLongClick(int position) {
         int car_id = _carModels.getJSONObjectWrapper(position).getInt("car_id");
 
+        //create and show the delete car popup window
         Dialog viewDeleteCarForm = new Dialog(this.requireContext());
         viewDeleteCarForm.setContentView(R.layout.delete_car_form);
         viewDeleteCarForm.show();
@@ -146,7 +146,7 @@ public class CarManagerFragment extends Fragment implements recyclerViewInterfac
         //access form data
         EditText name = viewDeleteCarForm.findViewById(R.id.delete_car_name);
 
-        //delete car button onClick listener
+        //delete car forever button onClick listener
         Button deleteCarButton = viewDeleteCarForm.findViewById(R.id.delete_car_forever_btn);
         deleteCarButton.setOnClickListener(v -> {
             if(_carModels.getJSONObjectWrapper(position).getString("name").equals(name.getText().toString())){

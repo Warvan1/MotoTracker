@@ -29,4 +29,7 @@
     <string name="odometer">Odometer</string>
     <string name="notes">Notes</string>
     <string name="addMaintenance">Add Maintenance</string>
+    <string name="date">Date</string>
+    <string name="costColin">Cost:</string>
+    <string name="cost">Cost</string>
 </resources>

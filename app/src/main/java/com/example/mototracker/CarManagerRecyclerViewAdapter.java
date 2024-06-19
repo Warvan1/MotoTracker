@@ -11,11 +11,11 @@ import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 public class CarManagerRecyclerViewAdapter extends RecyclerView.Adapter<CarManagerRecyclerViewAdapter.MyViewHolder> {
-    private final recyclerViewInterface _CarManager_recyclerViewInterface;
+    private final RecyclerViewInterface _CarManager_recyclerViewInterface;
     private Context _context;
     private JSONArrayWrapper _carModels;
 
-    public CarManagerRecyclerViewAdapter(Context context, JSONArrayWrapper carModels, recyclerViewInterface recyclerViewInterface){
+    public CarManagerRecyclerViewAdapter(Context context, JSONArrayWrapper carModels, RecyclerViewInterface recyclerViewInterface){
         _context = context;
         _carModels = carModels;
         _CarManager_recyclerViewInterface = recyclerViewInterface;
@@ -66,7 +66,7 @@ public class CarManagerRecyclerViewAdapter extends RecyclerView.Adapter<CarManag
         public TextView _selectedView;
         public CardView _cardView;
 
-        public MyViewHolder(@NonNull View itemView, recyclerViewInterface recyclerViewInterface){
+        public MyViewHolder(@NonNull View itemView, RecyclerViewInterface recyclerViewInterface){
             super(itemView);
             _nameView = itemView.findViewById(R.id.car_manager_row_name);
             _yearView = itemView.findViewById(R.id.car_manager_row_year);

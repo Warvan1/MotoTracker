@@ -4,6 +4,8 @@ import android.app.Dialog;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -18,11 +20,14 @@ import android.widget.Toast;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
-public class MaintenanceLogFragment extends Fragment {
+public class MaintenanceLogFragment extends Fragment implements RecyclerViewInterface {
     private Auth0Authentication _auth0;
     private JSONObjectWrapper _userProfile;
     private FragmentSwitcher _fragmentSwitcher;
     private JSONObjectWrapper _currentCarJSON;
+    private JSONArrayWrapper _maintenanceLogModels;
+    private RecyclerView _recyclerView;
+    private MaintenanceLogRecyclerViewAdapter _adapter;
 
     public MaintenanceLogFragment() {
         // Required empty public constructor
@@ -50,6 +55,9 @@ public class MaintenanceLogFragment extends Fragment {
         }
         _userProfile = _auth0.getUserProfile();
 
+        //get our recyclerView for our adapter
+        _recyclerView = view.findViewById(R.id.maintenance_log_recycler_view);
+
         //get the current car object
         new HTTPRequest(getString(R.string.api_base_url) + "/getcurrentcar")
                 .setAuthToken(_auth0.getAccessToken(), _userProfile.getString("user_id")).setCallback(res -> {
@@ -59,8 +67,18 @@ public class MaintenanceLogFragment extends Fragment {
                     _currentCarJSON = new JSONObjectWrapper(res);
                 }).runAsync();
 
-        //add maintenance dialog form view
-        Dialog viewAddMaintenanceForm = new Dialog(this.requireContext());
+        new HTTPRequest(getString(R.string.api_base_url) + "/getmaintenancelog")
+                .setAuthToken(_auth0.getAccessToken(), _userProfile.getString("user_id")).setCallback(res -> {
+                    Log.d("getmaintenancelog", "callback: " + res);
+                    if(res.equals("null")){
+                        return;
+                    }
+                    _maintenanceLogModels = new JSONArrayWrapper(res);
+
+                    _adapter = new MaintenanceLogRecyclerViewAdapter(this.getContext(), _maintenanceLogModels, this);
+                    _recyclerView.setAdapter(_adapter);
+                    _recyclerView.setLayoutManager(new LinearLayoutManager(this.getContext()));
+                }).runAsync();
 
         //floating action button on click method for adding maintenance
         FloatingActionButton addMaintenanceButton = view.findViewById(R.id.add_maintenance_btn);
@@ -70,7 +88,9 @@ public class MaintenanceLogFragment extends Fragment {
                 Toast.makeText(this.getContext(), "Add or Select a car in the Car Manager to add maintenance.", Toast.LENGTH_LONG).show();
                 return;
             }
-            //create and show popup window
+
+            //create and show add maintenance popup window
+            Dialog viewAddMaintenanceForm = new Dialog(this.requireContext());
             viewAddMaintenanceForm.setContentView(R.layout.add_maintenance_form);
             viewAddMaintenanceForm.show();
 
@@ -96,7 +116,7 @@ public class MaintenanceLogFragment extends Fragment {
                 public void onNothingSelected(AdapterView<?> parent) {}
             });
 
-            //add maintenance onClick listener
+            //add maintenance submit button onClick listener
             Button addMaintenanceSubmitButton = viewAddMaintenanceForm.findViewById(R.id.add_maintenance_submit_btn);
             addMaintenanceSubmitButton.setOnClickListener(v2 -> {
                 //TODO: add input validation
@@ -114,10 +134,24 @@ public class MaintenanceLogFragment extends Fragment {
                 Log.d("maintenanceJSON", "json: " + addMaintenanceJSON);
                 new HTTPRequest(getString(R.string.api_base_url) + "/addmaintenance?car_id=" + _currentCarJSON.getInt("car_id"))
                         .setMethod("POST").setAuthToken(_auth0.getAccessToken(), _userProfile.getString("user_id"))
-                        .setData(addMaintenanceJSON.toString()).runAsync();
+                        .setData(addMaintenanceJSON.toString()).setCallback(res -> {
+                            Log.d("addmaintenance", "callback: " + res);
+                            JSONObjectWrapper maintenanceLogModel = new JSONObjectWrapper(res);
+                            _maintenanceLogModels.put(maintenanceLogModel);
+                            _adapter.notifyItemInserted(_maintenanceLogModels.length());
+                        }).runAsync();
             });
         });
-
         return view;
+    }
+
+    @Override
+    public void onItemClick(int position) {
+
+    }
+
+    @Override
+    public void onItemLongClick(int position) {
+
     }
 }
