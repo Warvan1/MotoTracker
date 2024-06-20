@@ -9,6 +9,8 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.text.SimpleDateFormat;
+
 public class MaintenanceLogRecyclerViewAdapter extends RecyclerView.Adapter<MaintenanceLogRecyclerViewAdapter.MyViewHolder> {
     private final RecyclerViewInterface _maintenanceLog_recycler_ViewInterface;
     private Context _context;
@@ -32,7 +34,9 @@ public class MaintenanceLogRecyclerViewAdapter extends RecyclerView.Adapter<Main
     public void onBindViewHolder(@NonNull MaintenanceLogRecyclerViewAdapter.MyViewHolder holder, int position) {
         //assigning values to the views we created in the xml layout file based on the position of the recycler view
         holder._typeView.setText(_maintenanceLogModels.getJSONObjectWrapper(position).getString("service_type"));
-        holder._dateView.setText(_maintenanceLogModels.getJSONObjectWrapper(position).getString("timestamp"));
+        SimpleDateFormat sdf = new SimpleDateFormat("M-d-yyyy   (h:mm)");
+        String date = sdf.format(Long.parseLong(_maintenanceLogModels.getJSONObjectWrapper(position).getString("timestamp")));
+        holder._dateView.setText(date);
         holder._costView.setText(_maintenanceLogModels.getJSONObjectWrapper(position).getString("cost"));
         holder._milesView.setText(_maintenanceLogModels.getJSONObjectWrapper(position).getString("miles"));
         holder._notesView.setText(_maintenanceLogModels.getJSONObjectWrapper(position).getString("notes"));
