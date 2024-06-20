@@ -8,6 +8,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.Iterator;
+
 public class JSONObjectWrapper {
     private final JSONObject _jsonObject;
     JSONObjectWrapper(){
@@ -177,6 +179,9 @@ public class JSONObjectWrapper {
     }
     public void remove(String key){
         _jsonObject.remove(key);
+    }
+    public Iterator<String> keys(){
+        return _jsonObject.keys();
     }
 
 }

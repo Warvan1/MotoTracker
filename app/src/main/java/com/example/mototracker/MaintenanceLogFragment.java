@@ -131,10 +131,12 @@ public class MaintenanceLogFragment extends Fragment implements RecyclerViewInte
                 addMaintenanceJSON.put("miles", Integer.parseInt(miles.getText().toString()));
                 addMaintenanceJSON.put("notes", notes.getText().toString());
 
-                Log.d("maintenanceJSON", "json: " + addMaintenanceJSON);
-                new HTTPRequest(getString(R.string.api_base_url) + "/addmaintenance?car_id=" + _currentCarJSON.getInt("car_id"))
+                JSONObjectWrapper query = new JSONObjectWrapper();
+                query.put("car_id", _currentCarJSON.getInt("car_id"));
+
+                new HTTPRequest(getString(R.string.api_base_url) + "/addmaintenance").setQueries(query)
                         .setMethod("POST").setAuthToken(_auth0.getAccessToken(), _userProfile.getString("user_id"))
-                        .setData(addMaintenanceJSON.toString()).setCallback(res -> {
+                        .setData(addMaintenanceJSON).setCallback(res -> {
                             Log.d("addmaintenance", "callback: " + res);
                             JSONObjectWrapper maintenanceLogModel = new JSONObjectWrapper(res);
                             _maintenanceLogModels.put(maintenanceLogModel);

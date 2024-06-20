@@ -14,10 +14,12 @@ import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
+import java.util.Iterator;
 import java.util.function.Consumer;
 
 public class HTTPRequest{
-    private final String _url;
+    private String _url;
+    private String _queries;
     private String _method;
     private String _authToken;
     private String _user_id;
@@ -41,12 +43,28 @@ public class HTTPRequest{
         _user_id = user_id;
         return this;
     }
-    public HTTPRequest setData(String data){
-        _data = data;
+    public HTTPRequest setData(JSONObjectWrapper data){
+        _data = data.toString();
         return this;
     }
     public HTTPRequest setCallback(Consumer<String> callback){
         _callback = callback;
+        return this;
+    }
+    public HTTPRequest setQueries(JSONObjectWrapper queries){
+        Iterator<String> keys = queries.keys();
+        _queries = "";
+        while(keys.hasNext()){
+            String key = keys.next();
+            if(_queries.isEmpty()){
+                _queries += "?";
+            }
+            else{
+                _queries += "&";
+            }
+            _queries += key + "=" + queries.getString(key);
+        }
+        Log.d("httpreq", "setQueries: " + _queries);
         return this;
     }
     public void runAsync(){
@@ -71,6 +89,9 @@ public class HTTPRequest{
         HttpURLConnection urlConnection = null;
 
         try {
+            if(_queries != null){
+                _url += _queries;
+            }
             URL url = new URL(_url);
 
             urlConnection = (HttpURLConnection) url.openConnection();

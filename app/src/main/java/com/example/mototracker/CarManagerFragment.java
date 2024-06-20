@@ -108,7 +108,7 @@ public class CarManagerFragment extends Fragment implements RecyclerViewInterfac
                 //send new car object to the server
                 new HTTPRequest(getString(R.string.api_base_url) + "/addcar").setMethod("POST")
                         .setAuthToken(_auth0.getAccessToken(), _userProfile.getString("user_id"))
-                        .setData(addCarJSON.toString()).setCallback(res -> {
+                        .setData(addCarJSON).setCallback(res -> {
                             //remove all current car highlights
                             highlightCurrentCar(0);
                             //add car model from server to our recycler view
@@ -130,7 +130,10 @@ public class CarManagerFragment extends Fragment implements RecyclerViewInterfac
         highlightCurrentCar(car_id);
 
         //set the current car id for the user
-        new HTTPRequest(getString(R.string.api_base_url) + "/setcurrentcar?car_id=" + car_id)
+        JSONObjectWrapper query = new JSONObjectWrapper();
+        query.put("car_id", car_id);
+
+        new HTTPRequest(getString(R.string.api_base_url) + "/setcurrentcar").setQueries(query)
                 .setAuthToken(_auth0.getAccessToken(), _userProfile.getString("user_id")).runAsync();
     }
 
@@ -153,7 +156,10 @@ public class CarManagerFragment extends Fragment implements RecyclerViewInterfac
                 //close the form
                 viewDeleteCarForm.dismiss();
 
-                new HTTPRequest(getString(R.string.api_base_url) + "/deletecar?car_id=" + car_id)
+                JSONObjectWrapper query = new JSONObjectWrapper();
+                query.put("car_id", car_id);
+
+                new HTTPRequest(getString(R.string.api_base_url) + "/deletecar").setQueries(query)
                         .setAuthToken(_auth0.getAccessToken(), _userProfile.getString("user_id")).runAsync();
 
                 _carModels.remove(position);

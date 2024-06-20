@@ -118,7 +118,7 @@ public class MainActivity extends AppCompatActivity {
             menuItem.setTitle(R.string.logout);
             //make an adduser post request
             new HTTPRequest(getString(R.string.api_base_url) + "/adduser").setMethod("POST")
-                    .setAuthToken(_auth0.getAccessToken()).setData(_userProfile.toString()).runAsync();
+                    .setAuthToken(_auth0.getAccessToken()).setData(_userProfile).runAsync();
             //switch to the dashboard fragment on login if we are on the home fragment
             Fragment currentFragment = getSupportFragmentManager().findFragmentById(R.id.flFragment);
             if(currentFragment instanceof HomeFragment) {
