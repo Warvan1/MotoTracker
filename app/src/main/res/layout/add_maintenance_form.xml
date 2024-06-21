@@ -47,7 +47,7 @@
             android:id="@+id/add_maintenance_cost"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:inputType="number"
+            android:inputType="numberDecimal"
             android:paddingBottom="14dp"
             android:paddingTop="14dp"
             android:width="240dp"

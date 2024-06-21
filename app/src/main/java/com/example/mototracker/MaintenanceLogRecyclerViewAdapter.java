@@ -37,8 +37,10 @@ public class MaintenanceLogRecyclerViewAdapter extends RecyclerView.Adapter<Main
         SimpleDateFormat sdf = new SimpleDateFormat("M-d-yyyy   (h:mm)");
         String date = sdf.format(Long.parseLong(_maintenanceLogModels.getJSONObjectWrapper(position).getString("timestamp")));
         holder._dateView.setText(date);
-        holder._costView.setText(_maintenanceLogModels.getJSONObjectWrapper(position).getString("cost"));
-        holder._milesView.setText(_maintenanceLogModels.getJSONObjectWrapper(position).getString("miles"));
+        holder._costView.setText(String.format(_context.getString(R.string.costFormat),
+                _maintenanceLogModels.getJSONObjectWrapper(position).getString("cost")));
+        holder._milesView.setText(String.format(_context.getString(R.string.milesFormat),
+                _maintenanceLogModels.getJSONObjectWrapper(position).getString("miles")));
         holder._notesView.setText(_maintenanceLogModels.getJSONObjectWrapper(position).getString("notes"));
     }
 

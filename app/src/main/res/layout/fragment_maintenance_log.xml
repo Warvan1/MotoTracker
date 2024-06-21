@@ -11,11 +11,73 @@
         android:orientation="vertical">
 
         <TextView
+            android:id="@+id/maintenance_log_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center|top"
-            android:padding="16dp"
+            android:paddingTop="8dp"
+            android:paddingBottom="0dp"
+            android:textSize="18sp"
             android:text="@string/maintenanceLog" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="16sp"
+                android:width="70dp"
+                android:text="@string/type"
+                android:paddingBottom="12dp"
+                android:paddingTop="12dp" />
+
+            <Spinner
+                android:id="@+id/filter_service_types_spinner"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:spinnerMode="dropdown"
+                android:paddingBottom="14dp"
+                android:paddingTop="14dp" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            style="?android:attr/buttonBarStyle"
+            android:id="@+id/maintenance_log_paging_bar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center">
+
+            <Button
+                style="?android:attr/buttonBarButtonStyle"
+                android:id="@+id/maintenance_log_paging_previous"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:width="140dp"
+                android:backgroundTint="@color/md_theme_secondaryContainer"
+                android:text="@string/previous20" />
+
+            <TextView
+                android:id="@+id/maintenance_log_paging_detail"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="16sp"
+                android:padding="8dp"
+                android:text="@string/pageDetailPlaceholder"/>
+
+            <Button
+                style="?android:attr/buttonBarButtonStyle"
+                android:id="@+id/maintenance_log_paging_next"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:width="140dp"
+                android:backgroundTint="@color/md_theme_secondaryContainer"
+                android:text="@string/next20"/>
+
+        </LinearLayout>
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/maintenance_log_recycler_view"

@@ -15,7 +15,9 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -28,6 +30,10 @@ public class MaintenanceLogFragment extends Fragment implements RecyclerViewInte
     private JSONArrayWrapper _maintenanceLogModels;
     private RecyclerView _recyclerView;
     private MaintenanceLogRecyclerViewAdapter _adapter;
+    private String _filter_service_type;
+    private LinearLayout _pagingBar;
+    private int _logTotalPages;
+    private int _logPage;
 
     public MaintenanceLogFragment() {
         // Required empty public constructor
@@ -58,6 +64,10 @@ public class MaintenanceLogFragment extends Fragment implements RecyclerViewInte
         //get our recyclerView for our adapter
         _recyclerView = view.findViewById(R.id.maintenance_log_recycler_view);
 
+        //get our paging bar and set its initial status to invisible
+        _pagingBar = view.findViewById(R.id.maintenance_log_paging_bar);
+        _pagingBar.setVisibility(View.GONE);
+
         //get the current car object
         new HTTPRequest(getString(R.string.api_base_url) + "/getcurrentcar")
                 .setAuthToken(_auth0.getAccessToken(), _userProfile.getString("user_id")).setCallback(res -> {
@@ -65,20 +75,29 @@ public class MaintenanceLogFragment extends Fragment implements RecyclerViewInte
                         return;
                     }
                     _currentCarJSON = new JSONObjectWrapper(res);
+
+                    //set the title of the fragment header using the car name
+                    TextView title = view.findViewById(R.id.maintenance_log_title);
+                    title.setText(String.format(getString(R.string.maintenanceLog_named),
+                            _currentCarJSON.getString("name")));
                 }).runAsync();
 
-        new HTTPRequest(getString(R.string.api_base_url) + "/getmaintenancelog")
-                .setAuthToken(_auth0.getAccessToken(), _userProfile.getString("user_id")).setCallback(res -> {
-                    Log.d("getmaintenancelog", "callback: " + res);
-                    if(res.equals("null")){
-                        return;
-                    }
-                    _maintenanceLogModels = new JSONArrayWrapper(res);
-
-                    _adapter = new MaintenanceLogRecyclerViewAdapter(this.getContext(), _maintenanceLogModels, this);
-                    _recyclerView.setAdapter(_adapter);
-                    _recyclerView.setLayoutManager(new LinearLayoutManager(this.getContext()));
-                }).runAsync();
+        //setup filter dropdown menu
+        Spinner filter_type_spinner = view.findViewById(R.id.filter_service_types_spinner);
+        ArrayAdapter<CharSequence> filter_type_adapter = ArrayAdapter.createFromResource(this.requireContext(),
+                R.array.service_types_all, android.R.layout.simple_spinner_item);
+        filter_type_adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        filter_type_spinner.setAdapter(filter_type_adapter);
+        //item selected listener for our dropdown menu
+        filter_type_spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                _filter_service_type = parent.getItemAtPosition(position).toString();
+                getMaintenanceLogModelsFromAPI();
+            }
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {}
+        });
 
         //floating action button on click method for adding maintenance
         FloatingActionButton addMaintenanceButton = view.findViewById(R.id.add_maintenance_btn);
@@ -127,7 +146,7 @@ public class MaintenanceLogFragment extends Fragment implements RecyclerViewInte
                 //retrieve the form data into a json object
                 JSONObjectWrapper addMaintenanceJSON = new JSONObjectWrapper();
                 addMaintenanceJSON.put("type", type[0]);
-                addMaintenanceJSON.put("cost", Integer.parseInt(cost.getText().toString()));
+                addMaintenanceJSON.put("cost", Double.parseDouble(cost.getText().toString()));
                 addMaintenanceJSON.put("miles", Integer.parseInt(miles.getText().toString()));
                 addMaintenanceJSON.put("notes", notes.getText().toString());
 
@@ -137,10 +156,7 @@ public class MaintenanceLogFragment extends Fragment implements RecyclerViewInte
                 new HTTPRequest(getString(R.string.api_base_url) + "/addmaintenance").setQueries(query)
                         .setMethod("POST").setAuthToken(_auth0.getAccessToken(), _userProfile.getString("user_id"))
                         .setData(addMaintenanceJSON).setCallback(res -> {
-                            Log.d("addmaintenance", "callback: " + res);
-                            JSONObjectWrapper maintenanceLogModel = new JSONObjectWrapper(res);
-                            _maintenanceLogModels.put(maintenanceLogModel);
-                            _adapter.notifyItemInserted(_maintenanceLogModels.length());
+                            getMaintenanceLogModelsFromAPI();
                         }).runAsync();
             });
         });
@@ -155,5 +171,75 @@ public class MaintenanceLogFragment extends Fragment implements RecyclerViewInte
     @Override
     public void onItemLongClick(int position) {
 
+    }
+
+    public void getMaintenanceLogModelsFromAPI(){
+        JSONObjectWrapper queries = new JSONObjectWrapper();
+        //handle filter by service type
+        if(_filter_service_type != null && !_filter_service_type.equals("All")){
+            queries.put("filter", _filter_service_type);
+        }
+        //grab specific page if set
+        if(_logPage >= 1){
+            queries.put("page", _logPage);
+        }
+
+        new HTTPRequest(getString(R.string.api_base_url) + "/getmaintenancelog").setQueries(queries)
+                .setAuthToken(_auth0.getAccessToken(), _userProfile.getString("user_id")).setCallback(res -> {
+                    Log.d("getmaintenancelog", "callback: " + res);
+                    if(res.equals("null")){
+                        return;
+                    }
+                    JSONObjectWrapper resJSON = new JSONObjectWrapper(res);
+                    _maintenanceLogModels = resJSON.getJSONArrayWrapper("data");
+                    _logTotalPages = resJSON.getInt("totalPages");
+                    _logPage = resJSON.getInt("page");
+
+                    //update the recycler view with a new adapter
+                    _adapter = new MaintenanceLogRecyclerViewAdapter(this.getContext(), _maintenanceLogModels, this);
+                    _recyclerView.setAdapter(_adapter);
+                    _recyclerView.setLayoutManager(new LinearLayoutManager(this.getContext()));
+
+                    //handle the paging bar
+                    handlePagingBar();
+                }).runAsync();
+    }
+
+    public void handlePagingBar(){
+        if(_logTotalPages > 1){
+            _pagingBar.setVisibility(View.VISIBLE);
+        }
+        else{
+            _pagingBar.setVisibility(View.GONE);
+            return;
+        }
+
+        //handle the x / x in the middle of the paging bar
+        TextView pagingDetail = _pagingBar.findViewById(R.id.maintenance_log_paging_detail);
+        pagingDetail.setText(String.format(getString(R.string.pageDetail), _logPage, _logTotalPages));
+
+        //handle the previous and next buttons
+        Button previousButton = _pagingBar.findViewById(R.id.maintenance_log_paging_previous);
+        Button nextButton = _pagingBar.findViewById(R.id.maintenance_log_paging_next);
+        if(_logPage > 1){
+            previousButton.setEnabled(true);
+            previousButton.setOnClickListener(v -> {
+                _logPage--;
+                getMaintenanceLogModelsFromAPI();
+            });
+        }
+        else{
+            previousButton.setEnabled(false);
+        }
+        if(_logPage < _logTotalPages){
+            nextButton.setEnabled(true);
+            nextButton.setOnClickListener(v -> {
+                _logPage++;
+                getMaintenanceLogModelsFromAPI();
+            });
+        }
+        else{
+            nextButton.setEnabled(false);
+        }
     }
 }

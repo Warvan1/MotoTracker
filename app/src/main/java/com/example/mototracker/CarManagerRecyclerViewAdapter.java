@@ -38,7 +38,8 @@ public class CarManagerRecyclerViewAdapter extends RecyclerView.Adapter<CarManag
         holder._yearView.setText(_carModels.getJSONObjectWrapper(position).getString("year"));
         holder._makeView.setText(_carModels.getJSONObjectWrapper(position).getString("make"));
         holder._modelView.setText(_carModels.getJSONObjectWrapper(position).getString("model"));
-        holder._milesView.setText(_carModels.getJSONObjectWrapper(position).getString("miles"));
+        holder._milesView.setText(String.format(_context.getString(R.string.milesFormat),
+                _carModels.getJSONObjectWrapper(position).getString("miles")));
         //handle currentCar coloring
         if(_carModels.getJSONObjectWrapper(position).getBoolean("current_car")){
             holder._cardView.setCardBackgroundColor(_context.getResources().getColor(R.color.md_theme_tertiaryContainer_mediumContrast));
