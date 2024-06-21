@@ -42,7 +42,7 @@ public class DashboardFragment extends Fragment {
 
         //retrieve user data from the database
         new HTTPRequest(getString(R.string.api_base_url) + "/getuser")
-                .setAuthToken(_auth0.getAccessToken(), _userProfile.getString("user_id")).setCallback(res -> {
+                .setAuthToken(_auth0.getAccessToken(), _userProfile.getString("userid")).setCallback(res -> {
                     if(res.equals("null")){
                         return;
                     }
@@ -51,7 +51,7 @@ public class DashboardFragment extends Fragment {
                 }).runAsync();
 
         new HTTPRequest(getString(R.string.api_base_url) + "/getcurrentcar")
-                .setAuthToken(_auth0.getAccessToken(), _userProfile.getString("user_id")).setCallback(res -> {
+                .setAuthToken(_auth0.getAccessToken(), _userProfile.getString("userid")).setCallback(res -> {
                     if(res.equals("null")){
                         return;
                     }

@@ -70,7 +70,7 @@ public class MaintenanceLogFragment extends Fragment implements RecyclerViewInte
 
         //get the current car object
         new HTTPRequest(getString(R.string.api_base_url) + "/getcurrentcar")
-                .setAuthToken(_auth0.getAccessToken(), _userProfile.getString("user_id")).setCallback(res -> {
+                .setAuthToken(_auth0.getAccessToken(), _userProfile.getString("userid")).setCallback(res -> {
                     if(res.equals("null")){
                         return;
                     }
@@ -154,7 +154,7 @@ public class MaintenanceLogFragment extends Fragment implements RecyclerViewInte
                 query.put("car_id", _currentCarJSON.getInt("car_id"));
 
                 new HTTPRequest(getString(R.string.api_base_url) + "/addmaintenance").setQueries(query)
-                        .setMethod("POST").setAuthToken(_auth0.getAccessToken(), _userProfile.getString("user_id"))
+                        .setMethod("POST").setAuthToken(_auth0.getAccessToken(), _userProfile.getString("userid"))
                         .setData(addMaintenanceJSON).setCallback(res -> {
                             getMaintenanceLogModelsFromAPI();
                         }).runAsync();
@@ -185,7 +185,7 @@ public class MaintenanceLogFragment extends Fragment implements RecyclerViewInte
         }
 
         new HTTPRequest(getString(R.string.api_base_url) + "/getmaintenancelog").setQueries(queries)
-                .setAuthToken(_auth0.getAccessToken(), _userProfile.getString("user_id")).setCallback(res -> {
+                .setAuthToken(_auth0.getAccessToken(), _userProfile.getString("userid")).setCallback(res -> {
                     Log.d("getmaintenancelog", "callback: " + res);
                     if(res.equals("null")){
                         return;

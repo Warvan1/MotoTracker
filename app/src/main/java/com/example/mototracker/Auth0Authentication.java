@@ -126,7 +126,7 @@ public class Auth0Authentication {
                     @Override
                     public void onSuccess(UserProfile userProfile) {
                         _userProfile = new JSONObjectWrapper();
-                        _userProfile.put("user_id", userProfile.getId());
+                        _userProfile.put("userid", userProfile.getId());
                         _userProfile.put("picture", userProfile.getPictureURL());
                         _userProfile.put("email", userProfile.getEmail());
                         _userProfile.put("email_verified", Boolean.TRUE.equals(userProfile.isEmailVerified()));

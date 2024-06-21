@@ -22,7 +22,7 @@ public class HTTPRequest{
     private String _queries;
     private String _method;
     private String _authToken;
-    private String _user_id;
+    private String _userid;
     private String _data;
     private Consumer<String> _callback;
     private String _response;
@@ -38,9 +38,9 @@ public class HTTPRequest{
         _authToken = token;
         return this;
     }
-    public HTTPRequest setAuthToken(String token, String user_id){
+    public HTTPRequest setAuthToken(String token, String userid){
         _authToken = token;
-        _user_id = user_id;
+        _userid = userid;
         return this;
     }
     public HTTPRequest setData(JSONObjectWrapper data){
@@ -99,8 +99,8 @@ public class HTTPRequest{
             if(_authToken != null) {
                 urlConnection.setRequestProperty("Authorization", _authToken);
             }
-            if(_user_id != null) {
-                urlConnection.setRequestProperty("user_id", _user_id);
+            if(_userid != null) {
+                urlConnection.setRequestProperty("userid", _userid);
             }
 
             //handle outputting the data for the body of a post request

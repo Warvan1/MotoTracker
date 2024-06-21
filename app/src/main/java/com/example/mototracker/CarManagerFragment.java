@@ -55,7 +55,7 @@ public class CarManagerFragment extends Fragment implements RecyclerViewInterfac
 
         //retrieve all cars for the user
         new HTTPRequest(getString(R.string.api_base_url) + "/getcars")
-                .setAuthToken(_auth0.getAccessToken(), _userProfile.getString("user_id"))
+                .setAuthToken(_auth0.getAccessToken(), _userProfile.getString("userid"))
                 .setCallback(res -> {
                     JSONObjectWrapper resJson = new JSONObjectWrapper(res);
                     _carModels = resJson.getJSONArrayWrapper("cars");
@@ -107,7 +107,7 @@ public class CarManagerFragment extends Fragment implements RecyclerViewInterfac
 
                 //send new car object to the server
                 new HTTPRequest(getString(R.string.api_base_url) + "/addcar").setMethod("POST")
-                        .setAuthToken(_auth0.getAccessToken(), _userProfile.getString("user_id"))
+                        .setAuthToken(_auth0.getAccessToken(), _userProfile.getString("userid"))
                         .setData(addCarJSON).setCallback(res -> {
                             //remove all current car highlights
                             highlightCurrentCar(0);
@@ -134,7 +134,7 @@ public class CarManagerFragment extends Fragment implements RecyclerViewInterfac
         query.put("car_id", car_id);
 
         new HTTPRequest(getString(R.string.api_base_url) + "/setcurrentcar").setQueries(query)
-                .setAuthToken(_auth0.getAccessToken(), _userProfile.getString("user_id")).runAsync();
+                .setAuthToken(_auth0.getAccessToken(), _userProfile.getString("userid")).runAsync();
     }
 
     @Override
@@ -160,7 +160,7 @@ public class CarManagerFragment extends Fragment implements RecyclerViewInterfac
                 query.put("car_id", car_id);
 
                 new HTTPRequest(getString(R.string.api_base_url) + "/deletecar").setQueries(query)
-                        .setAuthToken(_auth0.getAccessToken(), _userProfile.getString("user_id")).runAsync();
+                        .setAuthToken(_auth0.getAccessToken(), _userProfile.getString("userid")).runAsync();
 
                 _carModels.remove(position);
                 _adapter.notifyItemRemoved(position);
