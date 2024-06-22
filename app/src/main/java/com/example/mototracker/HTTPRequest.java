@@ -53,18 +53,18 @@ public class HTTPRequest{
     }
     public HTTPRequest setQueries(JSONObjectWrapper queries){
         Iterator<String> keys = queries.keys();
-        _queries = "";
+        StringBuilder queryBuilder = new StringBuilder();
         while(keys.hasNext()){
             String key = keys.next();
-            if(_queries.isEmpty()){
-                _queries += "?";
+            if(queryBuilder.length() == 0){
+                queryBuilder.append("?");
             }
             else{
-                _queries += "&";
+                queryBuilder.append("&");
             }
-            _queries += key + "=" + queries.getString(key);
+            queryBuilder.append(key).append("=").append(queries.getString(key));
         }
-        Log.d("httpreq", "setQueries: " + _queries);
+        _queries = queryBuilder.toString();
         return this;
     }
     public void runAsync(){

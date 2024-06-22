@@ -7,7 +7,6 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -186,7 +185,6 @@ public class MaintenanceLogFragment extends Fragment implements RecyclerViewInte
 
         new HTTPRequest(getString(R.string.api_base_url) + "/getmaintenancelog").setQueries(queries)
                 .setAuthToken(_auth0.getAccessToken(), _userProfile.getString("userid")).setCallback(res -> {
-                    Log.d("getmaintenancelog", "callback: " + res);
                     if(res.equals("null")){
                         return;
                     }

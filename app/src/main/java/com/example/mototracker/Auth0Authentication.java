@@ -13,9 +13,6 @@ import com.auth0.android.provider.WebAuthProvider;
 import com.auth0.android.result.Credentials;
 import com.auth0.android.result.UserProfile;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.util.function.Consumer;
 
 //singleton Auth0 Authentication class
