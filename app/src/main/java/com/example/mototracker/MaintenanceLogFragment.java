@@ -169,7 +169,28 @@ public class MaintenanceLogFragment extends Fragment implements RecyclerViewInte
 
     @Override
     public void onItemLongClick(int position) {
+        int maintenance_id = _maintenanceLogModels.getJSONObjectWrapper(position).getInt("maintenance_id");
 
+        //create and show the delete maintenance popup window
+        Dialog viewDeleteMaintenanceForm = new Dialog(this.requireContext());
+        viewDeleteMaintenanceForm.setContentView(R.layout.delete_maintenance_form);
+        viewDeleteMaintenanceForm.show();
+
+        //delete maintenance entry button onClick listener
+        Button deleteMaintenanceButton = viewDeleteMaintenanceForm.findViewById(R.id.delete_maintenance_forever_btn);
+        deleteMaintenanceButton.setOnClickListener(v -> {
+            //close the form
+            viewDeleteMaintenanceForm.dismiss();
+
+            JSONObjectWrapper query = new JSONObjectWrapper();
+            query.put("maintenance_id", maintenance_id);
+
+            new HTTPRequest(getString(R.string.api_base_url) + "/deletemaintenancelog").setQueries(query)
+                    .setAuthToken(_auth0.getAccessToken(), _userProfile.getString("userid")).setCallback(res -> {
+                        getMaintenanceLogModelsFromAPI();
+                    }).runAsync();
+
+        });
     }
 
     public void getMaintenanceLogModelsFromAPI(){

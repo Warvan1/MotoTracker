@@ -65,6 +65,16 @@ public class MaintenanceLogRecyclerViewAdapter extends RecyclerView.Adapter<Main
             _costView = itemView.findViewById(R.id.maintenance_log_row_cost);
             _milesView = itemView.findViewById(R.id.maintenance_log_row_miles);
             _notesView = itemView.findViewById(R.id.maintenance_log_row_notes);
+
+            if(recyclerViewInterface != null){
+                itemView.setOnLongClickListener(v -> {
+                    int position = getAdapterPosition();
+                    if (position != RecyclerView.NO_POSITION){
+                        recyclerViewInterface.onItemLongClick(position);
+                    }
+                    return true;
+                });
+            }
         }
     }
 }
