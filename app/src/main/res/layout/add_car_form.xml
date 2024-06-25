@@ -127,11 +127,30 @@
 
     </LinearLayout>
 
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center">
+
+        <TextView
+            android:id="@+id/add_car_error_message"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:width="350dp"
+            android:textSize="20sp"
+            android:padding="14dp"
+            android:visibility="gone"
+            android:background="@color/md_theme_errorContainer"
+            android:text="@string/defaultErrorMessage"/>
+
+    </LinearLayout>
+
     <Button
         android:id="@+id/add_car_submit_btn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
+        android:layout_marginTop="14dp"
         android:paddingBottom="14dp"
         android:paddingTop="14dp"
         android:backgroundTint="@color/md_theme_primary"

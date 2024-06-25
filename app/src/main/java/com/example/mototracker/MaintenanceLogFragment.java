@@ -115,6 +115,7 @@ public class MaintenanceLogFragment extends Fragment implements RecyclerViewInte
             //access form data
             EditText cost = viewAddMaintenanceForm.findViewById(R.id.add_maintenance_cost);
             EditText miles = viewAddMaintenanceForm.findViewById(R.id.add_maintenance_miles);
+            miles.setText(_currentCarJSON.getString("miles"));
             EditText notes = viewAddMaintenanceForm.findViewById(R.id.add_maintenance_notes);
             final String[] type = {"Fuel"};
 
@@ -137,7 +138,16 @@ public class MaintenanceLogFragment extends Fragment implements RecyclerViewInte
             //add maintenance submit button onClick listener
             Button addMaintenanceSubmitButton = viewAddMaintenanceForm.findViewById(R.id.add_maintenance_submit_btn);
             addMaintenanceSubmitButton.setOnClickListener(v2 -> {
-                //TODO: add input validation
+                //Input Validation
+                if(miles.getText().toString().isEmpty() || Integer.parseInt(miles.getText().toString()) < _currentCarJSON.getInt("miles")){
+                    miles.setText(_currentCarJSON.getString("miles"));
+                }
+                if(cost.getText().toString().isEmpty()){
+                    cost.setText("0");
+                }
+                if(notes.getText().toString().isEmpty()){
+                    notes.setText(" ");
+                }
 
                 //close the form
                 viewAddMaintenanceForm.dismiss();
@@ -152,6 +162,7 @@ public class MaintenanceLogFragment extends Fragment implements RecyclerViewInte
                 JSONObjectWrapper query = new JSONObjectWrapper();
                 query.put("car_id", _currentCarJSON.getInt("car_id"));
 
+                //add a new maintenance item
                 new HTTPRequest(getString(R.string.api_base_url) + "/addmaintenance").setQueries(query)
                         .setMethod("POST").setAuthToken(_auth0.getAccessToken(), _userProfile.getString("userid"))
                         .setData(addMaintenanceJSON).setCallback(res -> {
@@ -221,6 +232,15 @@ public class MaintenanceLogFragment extends Fragment implements RecyclerViewInte
 
                     //handle the paging bar
                     handlePagingBar();
+                }).runAsync();
+
+        //update the current car object
+        new HTTPRequest(getString(R.string.api_base_url) + "/getcurrentcar")
+                .setAuthToken(_auth0.getAccessToken(), _userProfile.getString("userid")).setCallback(res -> {
+                    if(res.equals("null")){
+                        return;
+                    }
+                    _currentCarJSON = new JSONObjectWrapper(res);
                 }).runAsync();
     }
 

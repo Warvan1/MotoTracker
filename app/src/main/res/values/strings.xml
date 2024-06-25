@@ -38,4 +38,10 @@
     <string name="pageDetailPlaceholder">x / x</string>
     <string name="pageDetail">%1$d / %2$d</string>
     <string name="deleteMaintenanceLogEntry">Delete Maintenance Log Entry</string>
+    <string name="defaultErrorMessage">Default Error Message</string>
+    <string name="nameIsRequired">%1$s is required.</string>
+    <string name="nameMaxLength">%1$s has a max length of %2$d characters.</string>
+    <string name="yearMinMessage">Year has to be greater than 1900.</string>
+    <string name="yearMaxMessage">Year has to be less than %1$d.</string>
+    <string name="milesToSmall">Miles needs to be greater or equal to the current cars miles.</string>
 </resources>
