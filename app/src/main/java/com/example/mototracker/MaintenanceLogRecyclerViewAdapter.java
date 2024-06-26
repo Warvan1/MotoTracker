@@ -41,6 +41,14 @@ public class MaintenanceLogRecyclerViewAdapter extends RecyclerView.Adapter<Main
                 _maintenanceLogModels.getJSONObjectWrapper(position).getString("cost")));
         holder._milesView.setText(String.format(_context.getString(R.string.milesFormat),
                 _maintenanceLogModels.getJSONObjectWrapper(position).getString("miles")));
+        if(_maintenanceLogModels.getJSONObjectWrapper(position).getString("service_type").equals("Fuel")){
+            holder._gallonsView.setVisibility(View.VISIBLE);
+            holder._gallonsView.setText(String.format(_context.getString(R.string.gallonsFormat),
+                    _maintenanceLogModels.getJSONObjectWrapper(position).getString("gallons")));
+        }
+        else{
+            holder._gallonsView.setVisibility(View.GONE);
+        }
         holder._notesView.setText(_maintenanceLogModels.getJSONObjectWrapper(position).getString("notes"));
     }
 
@@ -56,6 +64,7 @@ public class MaintenanceLogRecyclerViewAdapter extends RecyclerView.Adapter<Main
         public TextView _dateView;
         public TextView _costView;
         public TextView _milesView;
+        public TextView _gallonsView;
         public TextView _notesView;
 
         public MyViewHolder(@NonNull View itemView, RecyclerViewInterface recyclerViewInterface) {
@@ -64,6 +73,7 @@ public class MaintenanceLogRecyclerViewAdapter extends RecyclerView.Adapter<Main
             _dateView = itemView.findViewById(R.id.maintenance_log_row_date);
             _costView = itemView.findViewById(R.id.maintenance_log_row_cost);
             _milesView = itemView.findViewById(R.id.maintenance_log_row_miles);
+            _gallonsView = itemView.findViewById(R.id.maintenance_log_row_gallons);
             _notesView = itemView.findViewById(R.id.maintenance_log_row_notes);
 
             if(recyclerViewInterface != null){

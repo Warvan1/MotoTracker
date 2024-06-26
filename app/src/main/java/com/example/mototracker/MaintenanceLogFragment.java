@@ -114,6 +114,8 @@ public class MaintenanceLogFragment extends Fragment implements RecyclerViewInte
 
             //access form data
             EditText cost = viewAddMaintenanceForm.findViewById(R.id.add_maintenance_cost);
+            EditText gallons = viewAddMaintenanceForm.findViewById(R.id.add_maintenance_gallons);
+            TextView gallonsTitle = viewAddMaintenanceForm.findViewById(R.id.add_maintenance_gallons_title);
             EditText miles = viewAddMaintenanceForm.findViewById(R.id.add_maintenance_miles);
             miles.setText(_currentCarJSON.getString("miles"));
             EditText notes = viewAddMaintenanceForm.findViewById(R.id.add_maintenance_notes);
@@ -130,6 +132,15 @@ public class MaintenanceLogFragment extends Fragment implements RecyclerViewInte
                 @Override
                 public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                     type[0] = parent.getItemAtPosition(position).toString();
+                    if(type[0].equals("Fuel")){
+                        gallons.setVisibility(View.VISIBLE);
+                        gallonsTitle.setVisibility(View.VISIBLE);
+
+                    }
+                    else{
+                        gallons.setVisibility(View.GONE);
+                        gallonsTitle.setVisibility(View.GONE);
+                    }
                 }
                 @Override
                 public void onNothingSelected(AdapterView<?> parent) {}
@@ -145,6 +156,9 @@ public class MaintenanceLogFragment extends Fragment implements RecyclerViewInte
                 if(cost.getText().toString().isEmpty()){
                     cost.setText("0");
                 }
+                if(gallons.getText().toString().isEmpty() || !type[0].equals("Fuel")){
+                    gallons.setText("0");
+                }
                 if(notes.getText().toString().isEmpty()){
                     notes.setText(" ");
                 }
@@ -156,6 +170,7 @@ public class MaintenanceLogFragment extends Fragment implements RecyclerViewInte
                 JSONObjectWrapper addMaintenanceJSON = new JSONObjectWrapper();
                 addMaintenanceJSON.put("type", type[0]);
                 addMaintenanceJSON.put("cost", Double.parseDouble(cost.getText().toString()));
+                addMaintenanceJSON.put("gallons", Double.parseDouble(gallons.getText().toString()));
                 addMaintenanceJSON.put("miles", Integer.parseInt(miles.getText().toString()));
                 addMaintenanceJSON.put("notes", notes.getText().toString());
 

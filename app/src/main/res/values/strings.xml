@@ -27,6 +27,8 @@
     <string name="deleteCarForever">Delete Car Forever</string>
     <string name="type">Type</string>
     <string name="costDollars">Cost $</string>
+    <string name="gallons">Gallons</string>
+    <string name="gallonsFormat">Gallons: %1$s</string>
     <string name="odometer">Odometer</string>
     <string name="notes">Notes</string>
     <string name="addMaintenance">Add Maintenance</string>
