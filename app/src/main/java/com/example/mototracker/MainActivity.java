@@ -101,7 +101,7 @@ public class MainActivity extends AppCompatActivity {
                     _fragmentSwitcher.switchFragment(new CarManagerFragment(), getSupportFragmentManager());
                 }
                 else{
-                    Toast.makeText(this, "Login to view Car Manager Fragment", Toast.LENGTH_LONG).show();
+                    Toast.makeText(this, "Login to view Car Manager", Toast.LENGTH_LONG).show();
                 }
             }
 

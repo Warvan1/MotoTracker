@@ -46,4 +46,13 @@
     <string name="yearMinMessage">Year has to be greater than 1900.</string>
     <string name="yearMaxMessage">Year has to be less than %1$d.</string>
     <string name="milesToSmall">Miles needs to be greater or equal to the current cars miles.</string>
+    <string name="fuel">Fuel</string>
+    <string name="totalCosts">Total Costs</string>
+    <string name="totalCostsFormat">Total Costs: %1$s</string>
+    <string name="milesPerGallon">Miles Per Gallon</string>
+    <string name="milesPerGallonFormat">Miles Per Gallon: %1$s</string>
+    <string name="dollarsPerGallon">Dollars Per Gallon</string>
+    <string name="dollarsPerGallonFormat">Dollars Per Gallon: %1$s</string>
+    <string name="dollarsPerMile">Dollars Per Mile</string>
+    <string name="dollarsPerMileFormat">Dollars Per Mile: %1$s</string>
 </resources>
