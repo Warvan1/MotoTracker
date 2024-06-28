@@ -35,7 +35,7 @@ public class MaintenanceLogRecyclerViewAdapter extends RecyclerView.Adapter<Main
         //assigning values to the views we created in the xml layout file based on the position of the recycler view
         holder._typeView.setText(_maintenanceLogModels.getJSONObjectWrapper(position).getString("service_type"));
         SimpleDateFormat sdf = new SimpleDateFormat("M-d-yyyy   (h:mm)");
-        String date = sdf.format(Long.parseLong(_maintenanceLogModels.getJSONObjectWrapper(position).getString("timestamp")));
+        String date = sdf.format(_maintenanceLogModels.getJSONObjectWrapper(position).getLong("timestamp"));
         holder._dateView.setText(date);
         holder._costView.setText(String.format(_context.getString(R.string.costFormat),
                 _maintenanceLogModels.getJSONObjectWrapper(position).getString("cost")));

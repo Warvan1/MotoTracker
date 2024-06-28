@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -170,6 +170,232 @@
             </androidx.constraintlayout.widget.ConstraintLayout>
         </androidx.cardview.widget.CardView>
 
+        <androidx.cardview.widget.CardView
+            android:id="@+id/dashboard_oil_change_card"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center|top"
+            android:layout_margin="8dp"
+            app:cardCornerRadius="20dp"
+            app:cardBackgroundColor="@color/md_theme_primaryContainer_mediumContrast">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <TextView
+                    android:id="@+id/dashboard_oil_change_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/oilChange"
+                    android:textSize="24sp"
+                    android:paddingTop="16dp"
+                    android:paddingStart="16dp"
+                    android:paddingEnd="16dp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/dashboard_oil_change_time"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/oilChangeTime"
+                    android:textSize="16sp"
+                    android:paddingTop="16dp"
+                    android:paddingStart="16dp"
+                    android:paddingEnd="16dp"
+                    app:layout_constraintStart_toStartOf="@id/dashboard_oil_change_title"
+                    app:layout_constraintTop_toBottomOf="@id/dashboard_oil_change_title" />
+
+                <TextView
+                    android:id="@+id/dashboard_oil_change_miles"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/oilChangeMiles"
+                    android:textSize="16sp"
+                    android:padding="16dp"
+                    app:layout_constraintStart_toStartOf="@id/dashboard_oil_change_time"
+                    app:layout_constraintTop_toBottomOf="@id/dashboard_oil_change_time" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </androidx.cardview.widget.CardView>
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/dashboard_tire_rotation_card"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center|top"
+            android:layout_margin="8dp"
+            app:cardCornerRadius="20dp"
+            app:cardBackgroundColor="@color/md_theme_primaryContainer_mediumContrast">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <TextView
+                    android:id="@+id/dashboard_tire_rotation_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/tireRotation"
+                    android:textSize="24sp"
+                    android:paddingTop="16dp"
+                    android:paddingStart="16dp"
+                    android:paddingEnd="16dp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/dashboard_tire_rotation_time"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/tireRotationTime"
+                    android:textSize="16sp"
+                    android:paddingTop="16dp"
+                    android:paddingStart="16dp"
+                    android:paddingEnd="16dp"
+                    app:layout_constraintStart_toStartOf="@id/dashboard_tire_rotation_title"
+                    app:layout_constraintTop_toBottomOf="@id/dashboard_tire_rotation_title" />
+
+                <TextView
+                    android:id="@+id/dashboard_tire_rotation_miles"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/tireRotationMiles"
+                    android:textSize="16sp"
+                    android:padding="16dp"
+                    app:layout_constraintStart_toStartOf="@id/dashboard_tire_rotation_time"
+                    app:layout_constraintTop_toBottomOf="@id/dashboard_tire_rotation_time" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </androidx.cardview.widget.CardView>
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/dashboard_air_filter_card"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center|top"
+            android:layout_margin="8dp"
+            app:cardCornerRadius="20dp"
+            app:cardBackgroundColor="@color/md_theme_primaryContainer_mediumContrast">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <TextView
+                    android:id="@+id/dashboard_air_filter_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/airFilter"
+                    android:textSize="24sp"
+                    android:paddingTop="16dp"
+                    android:paddingStart="16dp"
+                    android:paddingEnd="16dp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/dashboard_air_filter_time"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/airFilterTime"
+                    android:textSize="16sp"
+                    android:paddingTop="16dp"
+                    android:paddingStart="16dp"
+                    android:paddingEnd="16dp"
+                    app:layout_constraintStart_toStartOf="@id/dashboard_air_filter_title"
+                    app:layout_constraintTop_toBottomOf="@id/dashboard_air_filter_title" />
+
+                <TextView
+                    android:id="@+id/dashboard_air_filter_miles"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/airFilterMiles"
+                    android:textSize="16sp"
+                    android:padding="16dp"
+                    app:layout_constraintStart_toStartOf="@id/dashboard_air_filter_time"
+                    app:layout_constraintTop_toBottomOf="@id/dashboard_air_filter_time" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </androidx.cardview.widget.CardView>
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/dashboard_inspection_card"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center|top"
+            android:layout_margin="8dp"
+            app:cardCornerRadius="20dp"
+            app:cardBackgroundColor="@color/md_theme_primaryContainer_mediumContrast">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <TextView
+                    android:id="@+id/dashboard_inspection_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/inspection"
+                    android:textSize="24sp"
+                    android:paddingTop="16dp"
+                    android:paddingStart="16dp"
+                    android:paddingEnd="16dp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/dashboard_inspection_time"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/inspectionTime"
+                    android:textSize="16sp"
+                    android:padding="16dp"
+                    app:layout_constraintStart_toStartOf="@id/dashboard_inspection_title"
+                    app:layout_constraintTop_toBottomOf="@id/dashboard_inspection_title" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </androidx.cardview.widget.CardView>
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/dashboard_registration_card"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center|top"
+            android:layout_margin="8dp"
+            app:cardCornerRadius="20dp"
+            app:cardBackgroundColor="@color/md_theme_primaryContainer_mediumContrast">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <TextView
+                    android:id="@+id/dashboard_registration_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/registration"
+                    android:textSize="24sp"
+                    android:paddingTop="16dp"
+                    android:paddingStart="16dp"
+                    android:paddingEnd="16dp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/dashboard_registration_time"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/registrationTime"
+                    android:textSize="16sp"
+                    android:padding="16dp"
+                    app:layout_constraintStart_toStartOf="@id/dashboard_registration_title"
+                    app:layout_constraintTop_toBottomOf="@id/dashboard_registration_title" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </androidx.cardview.widget.CardView>
+
     </LinearLayout>
 
-</FrameLayout>
+</androidx.core.widget.NestedScrollView>

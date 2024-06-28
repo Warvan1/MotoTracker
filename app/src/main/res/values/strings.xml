@@ -55,4 +55,19 @@
     <string name="dollarsPerGallonFormat">Dollars Per Gallon: %1$s</string>
     <string name="dollarsPerMile">Dollars Per Mile</string>
     <string name="dollarsPerMileFormat">Dollars Per Mile: %1$s</string>
+    <string name="oilChange">Oil Change</string>
+    <string name="oilChangeTime">Oil Change Time</string>
+    <string name="oilChangeMiles">Oil Change Miles</string>
+    <string name="tireRotation">Tire Rotation</string>
+    <string name="tireRotationTime">Tire Rotation Time</string>
+    <string name="tireRotationMiles">Tire Rotation Miles</string>
+    <string name="airFilter">Air Filter</string>
+    <string name="airFilterTime">Air Filter Time</string>
+    <string name="airFilterMiles">Air Filter Miles</string>
+    <string name="inspection">Inspection</string>
+    <string name="inspectionTime">Inspection Time</string>
+    <string name="registration">Registration</string>
+    <string name="registrationTime">Registration Time</string>
+    <string name="timeSinceLastFormat">Time Since: %1$s</string>
+    <string name="milesSinceLastFormat">Miles Since: %1$d</string>
 </resources>
