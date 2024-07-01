@@ -116,56 +116,38 @@ public class DashboardFragment extends Fragment {
                     }
                     fuelDollarsPerMile.setText(String.format(getString(R.string.dollarsPerMileFormat), df.format(dpm)));
 
-                    if(resJSON.getLong("oil_change_time") == 0){
-                        oilChangeCard.setVisibility(View.GONE);
-                    }
-                    else{
-                        oilChangeCard.setVisibility(View.VISIBLE);
-                        String formatedTimeString = formatTimeInterval(resJSON.getLong("oil_change_time"), new Date().getTime());
-                        int milesDifference = resJSON.getInt("miles") - resJSON.getInt("oil_change_miles");
-                        oilChangeTime.setText(String.format(getString(R.string.timeSinceLastFormat), formatedTimeString));
-                        oilChangeMiles.setText(String.format(getString(R.string.milesSinceLastFormat), milesDifference));
-                    }
-                    if(resJSON.getLong("tire_rotation_time") == 0){
-                        tireRotationCard.setVisibility(View.GONE);
-                    }
-                    else{
-                        tireRotationCard.setVisibility(View.VISIBLE);
-                        String formatedTimeString = formatTimeInterval(resJSON.getLong("tire_rotation_time"), new Date().getTime());
-                        int milesDifference = resJSON.getInt("miles") - resJSON.getInt("tire_rotation_miles");
-                        tireRotationTime.setText(String.format(getString(R.string.timeSinceLastFormat), formatedTimeString));
-                        tireRotationMiles.setText(String.format(getString(R.string.milesSinceLastFormat), milesDifference));
-                    }
-                    if(resJSON.getLong("air_filter_time") == 0){
-                        airFilterCard.setVisibility(View.GONE);
-                    }
-                    else{
-                        airFilterCard.setVisibility(View.VISIBLE);
-                        String formatedTimeString = formatTimeInterval(resJSON.getLong("air_filter_time"), new Date().getTime());
-                        int milesDifference = resJSON.getInt("miles") - resJSON.getInt("air_filter_miles");
-                        airFilterTime.setText(String.format(getString(R.string.timeSinceLastFormat), formatedTimeString));
-                        airFilterMiles.setText(String.format(getString(R.string.milesSinceLastFormat), milesDifference));
-                    }
-                    if(resJSON.getLong("inspection_time") == 0){
-                        inspectionCard.setVisibility(View.GONE);
-                    }
-                    else{
-                        inspectionCard.setVisibility(View.VISIBLE);
-                        String formatedTimeString = formatTimeInterval(resJSON.getLong("inspection_time"), new Date().getTime());
-                        inspectionTime.setText(String.format(getString(R.string.timeSinceLastFormat), formatedTimeString));
-                    }
-                    if(resJSON.getLong("registration_time") == 0){
-                        registrationCard.setVisibility(View.GONE);
-                    }
-                    else{
-                        registrationCard.setVisibility(View.VISIBLE);
-                        String formatedTimeString = formatTimeInterval(resJSON.getLong("registration_time"), new Date().getTime());
-                        registrationTime.setText(String.format(getString(R.string.timeSinceLastFormat), formatedTimeString));
-                    }
+                    handleEventTracking(resJSON, oilChangeCard, oilChangeTime, oilChangeMiles, "oil_change_time", "oil_change_miles");
+                    handleEventTracking(resJSON, tireRotationCard, tireRotationTime, tireRotationMiles, "tire_rotation_time", "tire_rotation_miles");
+                    handleEventTracking(resJSON, airFilterCard, airFilterTime, airFilterMiles, "air_filter_time", "air_filter_miles");
+                    handleEventTracking(resJSON, inspectionCard, inspectionTime, "inspection_time");
+                    handleEventTracking(resJSON, registrationCard, registrationTime, "registration_time");
 
                 }).runAsync();
 
         return view;
+    }
+
+    public void handleEventTracking(JSONObjectWrapper resJSON, CardView cardView, TextView timeView, TextView milesView, String time, String miles){
+        if(resJSON.getInt(time) == 0){
+            cardView.setVisibility(View.GONE);
+        }
+        else{
+            cardView.setVisibility(View.VISIBLE);
+            String formatedTimeString = formatTimeInterval(resJSON.getLong(time), new Date().getTime());
+            int milesDifference = resJSON.getInt("miles") - resJSON.getInt(miles);
+            timeView.setText(String.format(getString(R.string.timeSinceLastFormat), formatedTimeString));
+            milesView.setText(String.format(getString(R.string.milesSinceLastFormat), milesDifference));
+        }
+    }
+    public void handleEventTracking(JSONObjectWrapper resJSON, CardView cardView, TextView timeView, String time){
+        if(resJSON.getInt(time) == 0){
+            cardView.setVisibility(View.GONE);
+        }
+        else{
+            cardView.setVisibility(View.VISIBLE);
+            String formatedTimeString = formatTimeInterval(resJSON.getLong(time), new Date().getTime());
+            timeView.setText(String.format(getString(R.string.timeSinceLastFormat), formatedTimeString));
+        }
     }
 
     public String formatTimeInterval(long startTimestamp, long endTimestamp){

@@ -189,7 +189,7 @@ public class MaintenanceLogFragment extends Fragment implements RecyclerViewInte
     }
 
     @Override
-    public void onItemClick(int position) {
+    public void onItemClick(int position, int id) {
 
     }
 

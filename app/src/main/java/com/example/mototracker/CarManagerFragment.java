@@ -10,8 +10,11 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -155,18 +158,72 @@ public class CarManagerFragment extends Fragment implements RecyclerViewInterfac
     }
 
     @Override
-    public void onItemClick(int position) {
+    public void onItemClick(int position, int id) {
         int car_id = _carModels.getJSONObjectWrapper(position).getInt("car_id");
 
-        //highlight the clicked car
-        highlightCurrentCar(car_id);
+        //handles clicking anywhere on the car card
+        if(id == 0){
+            //highlight the clicked car
+            highlightCurrentCar(car_id);
 
-        //set the current car id for the user
-        JSONObjectWrapper query = new JSONObjectWrapper();
-        query.put("car_id", car_id);
+            //set the current car id for the user
+            JSONObjectWrapper query = new JSONObjectWrapper();
+            query.put("car_id", car_id);
 
-        new HTTPRequest(getString(R.string.api_base_url) + "/setcurrentcar").setQueries(query)
-                .setAuthToken(_auth0.getAccessToken(), _userProfile.getString("userid")).runAsync();
+            new HTTPRequest(getString(R.string.api_base_url) + "/setcurrentcar").setQueries(query)
+                    .setAuthToken(_auth0.getAccessToken(), _userProfile.getString("userid")).runAsync();
+        }
+        //share button on click handler
+        else if(id == 1){
+            //create and show add maintenance popup window
+            Dialog viewShareCarForm = new Dialog(this.requireContext());
+            viewShareCarForm.setContentView(R.layout.share_car_form);
+            viewShareCarForm.show();
+
+            //access form data
+            EditText email = viewShareCarForm.findViewById(R.id.share_car_email);
+            TextView error_message = viewShareCarForm.findViewById(R.id.share_car_error_message);
+            final String[] permissions = {"View"};
+
+            //setup permissions dropdown menu
+            Spinner permission_spinner = viewShareCarForm.findViewById(R.id.share_car_permissions_spinner);
+            ArrayAdapter<CharSequence> type_adapter = ArrayAdapter.createFromResource(this.requireContext(),
+                    R.array.share_permissions, android.R.layout.simple_spinner_item);
+            type_adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+            permission_spinner.setAdapter(type_adapter);
+            //item selected listener for the permissions dropdown menu
+            permission_spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                @Override
+                public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                    permissions[0] = parent.getItemAtPosition(position).toString();
+                }
+                @Override
+                public void onNothingSelected(AdapterView<?> parent) {}
+            });
+
+            Button shareCarSubmitButton = viewShareCarForm.findViewById(R.id.share_car_submit_button);
+            shareCarSubmitButton.setOnClickListener(v -> {
+                //handle input validation
+                if(verifyStringLength(error_message, email.getText().toString(), 50, "Email")){
+                    return;
+                }
+
+                //close the form
+                viewShareCarForm.dismiss();
+
+                //retrieve the form data into json object
+                JSONObjectWrapper shareCarJSON = new JSONObjectWrapper();
+                shareCarJSON.put("email", email.getText().toString());
+                shareCarJSON.put("permissions", permissions[0]);
+
+                JSONObjectWrapper query = new JSONObjectWrapper();
+                query.put("car_id", car_id);
+
+                new HTTPRequest(getString(R.string.api_base_url) + "/sharecar").setMethod("POST").setQueries(query)
+                        .setAuthToken(_auth0.getAccessToken(), _userProfile.getString("userid"))
+                        .setData(shareCarJSON).runAsync();
+            });
+        }
     }
 
     @Override

@@ -4,21 +4,32 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.util.Objects;
+
 public class CarManagerRecyclerViewAdapter extends RecyclerView.Adapter<CarManagerRecyclerViewAdapter.MyViewHolder> {
     private final RecyclerViewInterface _CarManager_recyclerViewInterface;
     private Context _context;
     private JSONArrayWrapper _carModels;
+    private Auth0Authentication _auth0;
+    private JSONObjectWrapper _userProfile;
 
     public CarManagerRecyclerViewAdapter(Context context, JSONArrayWrapper carModels, RecyclerViewInterface recyclerViewInterface){
         _context = context;
         _carModels = carModels;
         _CarManager_recyclerViewInterface = recyclerViewInterface;
+
+        //get the user profile from the auth object
+        _auth0 = Auth0Authentication.getInstance(context);
+        if(_auth0.isAuthenticated()){
+            _userProfile = _auth0.getUserProfile();
+        }
     }
 
     @NonNull
@@ -49,6 +60,13 @@ public class CarManagerRecyclerViewAdapter extends RecyclerView.Adapter<CarManag
             holder._cardView.setCardBackgroundColor(_context.getResources().getColor(R.color.md_theme_primaryContainer_mediumContrast));
             holder._selectedView.setVisibility(View.INVISIBLE);
         }
+        //handle showing the share button if you own the car
+        if(_carModels.getJSONObjectWrapper(position).getString("user_id").equals(_userProfile.getString("userid"))){
+            holder._shareButtonView.setVisibility(View.VISIBLE);
+        }
+        else{
+            holder._shareButtonView.setVisibility(View.GONE);
+        }
     }
 
     @Override
@@ -65,6 +83,7 @@ public class CarManagerRecyclerViewAdapter extends RecyclerView.Adapter<CarManag
         public TextView _modelView;
         public TextView _milesView;
         public TextView _selectedView;
+        public Button _shareButtonView;
         public CardView _cardView;
 
         public MyViewHolder(@NonNull View itemView, RecyclerViewInterface recyclerViewInterface){
@@ -75,14 +94,24 @@ public class CarManagerRecyclerViewAdapter extends RecyclerView.Adapter<CarManag
             _modelView = itemView.findViewById(R.id.car_manager_row_model);
             _milesView = itemView.findViewById(R.id.car_manager_row_miles);
             _selectedView = itemView.findViewById(R.id.car_manager_row_selected);
+            _shareButtonView = itemView.findViewById(R.id.car_manager_share_button);
             _cardView = itemView.findViewById(R.id.car_manager_row_card);
 
             if(recyclerViewInterface != null){
                 itemView.setOnClickListener(v -> {
                     int position = getAdapterPosition();
                     if(position != RecyclerView.NO_POSITION){
-                        recyclerViewInterface.onItemClick(position);
+                        recyclerViewInterface.onItemClick(position, 0);
                     }
+                });
+
+                //share button on click handler
+                _shareButtonView.setOnClickListener(v -> {
+                    int position = getAdapterPosition();
+                    if(position != RecyclerView.NO_POSITION){
+                        recyclerViewInterface.onItemClick(position, 1);
+                    }
+
                 });
 
                 itemView.setOnLongClickListener(v -> {

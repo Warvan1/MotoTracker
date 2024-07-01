@@ -20,4 +20,10 @@
         <item>Inspection</item>
         <item>Registration</item>
     </string-array>
+
+    <string-array name="share_permissions">
+        <item>View</item>
+        <item>Edit</item>
+    </string-array>
+
 </resources>
