@@ -24,6 +24,7 @@
     <string-array name="share_permissions">
         <item>View</item>
         <item>Edit</item>
+        <item>Remove Access</item>
     </string-array>
 
 </resources>

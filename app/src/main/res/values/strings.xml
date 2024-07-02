@@ -73,4 +73,7 @@
     <string name="share">Share</string>
     <string name="email">Email</string>
     <string name="permissions">Permissions</string>
+    <string name="noEmailAccount">There is no account attached to that email.</string>
+    <string name="deleteSharedConfirmation">Are you sure you want to remove Your access to this car?</string>
+    <string name="removeMyAccess">Remove My Access</string>
 </resources>

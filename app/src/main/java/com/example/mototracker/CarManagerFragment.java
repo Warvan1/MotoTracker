@@ -208,9 +208,6 @@ public class CarManagerFragment extends Fragment implements RecyclerViewInterfac
                     return;
                 }
 
-                //close the form
-                viewShareCarForm.dismiss();
-
                 //retrieve the form data into json object
                 JSONObjectWrapper shareCarJSON = new JSONObjectWrapper();
                 shareCarJSON.put("email", email.getText().toString());
@@ -221,46 +218,78 @@ public class CarManagerFragment extends Fragment implements RecyclerViewInterfac
 
                 new HTTPRequest(getString(R.string.api_base_url) + "/sharecar").setMethod("POST").setQueries(query)
                         .setAuthToken(_auth0.getAccessToken(), _userProfile.getString("userid"))
-                        .setData(shareCarJSON).runAsync();
+                        .setData(shareCarJSON).setCallback(res -> {
+                            JSONObjectWrapper resJSON = new JSONObjectWrapper(res);
+                            boolean success = resJSON.getBoolean("success");
+                            if(success){
+                                //close the form
+                                viewShareCarForm.dismiss();
+                            }
+                            else{
+                                error_message.setText(getString(R.string.noEmailAccount));
+                                error_message.setVisibility(View.VISIBLE);
+                            }
+                        }).runAsync();
             });
         }
     }
 
     @Override
     public void onItemLongClick(int position) {
-        if(!_carModels.getJSONObjectWrapper(position).getString("permissions").equals("Edit")){
-            return;
-        }
         int car_id = _carModels.getJSONObjectWrapper(position).getInt("car_id");
 
-        //create and show the delete car popup window
-        Dialog viewDeleteCarForm = new Dialog(this.requireContext());
-        viewDeleteCarForm.setContentView(R.layout.delete_car_form);
-        viewDeleteCarForm.show();
+        if(_carModels.getJSONObjectWrapper(position).getString("user_id").equals(_userProfile.getString("userid"))) {
+            //create and show the delete car popup window
+            Dialog viewDeleteCarForm = new Dialog(this.requireContext());
+            viewDeleteCarForm.setContentView(R.layout.delete_car_form);
+            viewDeleteCarForm.show();
 
-        //access form data
-        EditText name = viewDeleteCarForm.findViewById(R.id.delete_car_name);
+            //access form data
+            EditText name = viewDeleteCarForm.findViewById(R.id.delete_car_name);
 
-        //delete car forever button onClick listener
-        Button deleteCarButton = viewDeleteCarForm.findViewById(R.id.delete_car_forever_btn);
-        deleteCarButton.setOnClickListener(v -> {
-            if(_carModels.getJSONObjectWrapper(position).getString("name").equals(name.getText().toString())){
+            //delete car forever button onClick listener
+            Button deleteCarButton = viewDeleteCarForm.findViewById(R.id.delete_car_forever_btn);
+            deleteCarButton.setOnClickListener(v -> {
+                if (_carModels.getJSONObjectWrapper(position).getString("name").equals(name.getText().toString())) {
+                    //close the form
+                    viewDeleteCarForm.dismiss();
+
+                    JSONObjectWrapper query = new JSONObjectWrapper();
+                    query.put("car_id", car_id);
+
+                    new HTTPRequest(getString(R.string.api_base_url) + "/deletecar").setQueries(query)
+                            .setAuthToken(_auth0.getAccessToken(), _userProfile.getString("userid")).runAsync();
+
+                    _carModels.remove(position);
+                    _adapter.notifyItemRemoved(position);
+                }
+                else {
+                    Toast.makeText(this.getContext(), "Did not delete: Make sure name matches car name.", Toast.LENGTH_LONG).show();
+                }
+            });
+        }
+        else{
+            //create and show the delete shared car popup window
+            Dialog viewDeleteSharedCarForm = new Dialog(this.requireContext());
+            viewDeleteSharedCarForm.setContentView(R.layout.delete_shared_car_form);
+            viewDeleteSharedCarForm.show();
+
+            Button removeAccessButton = viewDeleteSharedCarForm.findViewById(R.id.delete_shared_car_access_btn);
+            removeAccessButton.setOnClickListener(v -> {
                 //close the form
-                viewDeleteCarForm.dismiss();
+                viewDeleteSharedCarForm.dismiss();
 
                 JSONObjectWrapper query = new JSONObjectWrapper();
                 query.put("car_id", car_id);
 
-                new HTTPRequest(getString(R.string.api_base_url) + "/deletecar").setQueries(query)
+                new HTTPRequest(getString(R.string.api_base_url) + "/removemycaraccess").setQueries(query)
                         .setAuthToken(_auth0.getAccessToken(), _userProfile.getString("userid")).runAsync();
 
                 _carModels.remove(position);
                 _adapter.notifyItemRemoved(position);
-            }
-            else{
-                Toast.makeText(this.getContext(), "Did not delete: Make sure name matches car name.", Toast.LENGTH_LONG).show();
-            }
-        });
+            });
+
+        }
     }
 
     public void highlightCurrentCar(int currentCar){
