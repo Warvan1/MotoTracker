@@ -67,6 +67,9 @@ public class MaintenanceLogFragment extends Fragment implements RecyclerViewInte
         _pagingBar = view.findViewById(R.id.maintenance_log_paging_bar);
         _pagingBar.setVisibility(View.GONE);
 
+        //access add maintenance floating action button
+        FloatingActionButton addMaintenanceButton = view.findViewById(R.id.add_maintenance_btn);
+
         //get the current car object
         new HTTPRequest(getString(R.string.api_base_url) + "/getcurrentcar")
                 .setAuthToken(_auth0.getAccessToken(), _userProfile.getString("userid")).setCallback(res -> {
@@ -79,6 +82,14 @@ public class MaintenanceLogFragment extends Fragment implements RecyclerViewInte
                     TextView title = view.findViewById(R.id.maintenance_log_title);
                     title.setText(String.format(getString(R.string.maintenanceLog_named),
                             _currentCarJSON.getString("name")));
+
+                    //only show the add maintenance button if we have permission to edit the car
+                    if(!_currentCarJSON.getString("permissions").equals("Edit")){
+                        addMaintenanceButton.setVisibility(View.GONE);
+                    }
+                    else{
+                        addMaintenanceButton.setVisibility(View.VISIBLE);
+                    }
                 }).runAsync();
 
         //setup filter dropdown menu
@@ -99,7 +110,6 @@ public class MaintenanceLogFragment extends Fragment implements RecyclerViewInte
         });
 
         //floating action button on click method for adding maintenance
-        FloatingActionButton addMaintenanceButton = view.findViewById(R.id.add_maintenance_btn);
         addMaintenanceButton.setOnClickListener(v -> {
             //if the _currentCarJSON object is null show error and return
             if(_currentCarJSON == null){
@@ -195,6 +205,9 @@ public class MaintenanceLogFragment extends Fragment implements RecyclerViewInte
 
     @Override
     public void onItemLongClick(int position) {
+        if(!_currentCarJSON.getString("permissions").equals("Edit")){
+            return;
+        }
         int maintenance_id = _maintenanceLogModels.getJSONObjectWrapper(position).getInt("maintenance_id");
 
         //create and show the delete maintenance popup window

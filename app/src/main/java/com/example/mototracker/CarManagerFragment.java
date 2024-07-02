@@ -228,6 +228,9 @@ public class CarManagerFragment extends Fragment implements RecyclerViewInterfac
 
     @Override
     public void onItemLongClick(int position) {
+        if(!_carModels.getJSONObjectWrapper(position).getString("permissions").equals("Edit")){
+            return;
+        }
         int car_id = _carModels.getJSONObjectWrapper(position).getInt("car_id");
 
         //create and show the delete car popup window
