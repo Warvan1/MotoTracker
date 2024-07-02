@@ -50,8 +50,10 @@ public class MainActivity extends AppCompatActivity {
         //initialize the fragment switcher object
         _fragmentSwitcher = FragmentSwitcher.createInstance(_navigationView.getMenu());
 
-        //set the initial fragment to the home fragment
-        _fragmentSwitcher.switchFragment(new HomeFragment(), getSupportFragmentManager());
+        if(savedInstanceState == null){
+            //set the initial fragment to the home fragment on first launch
+            _fragmentSwitcher.switchFragment(new HomeFragment(), getSupportFragmentManager());
+        }
 
         //listener for when a item is selected in the drawer menu
         _navigationView.setNavigationItemSelectedListener(menuItem -> {
