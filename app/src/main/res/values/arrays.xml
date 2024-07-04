@@ -27,4 +27,10 @@
         <item>Remove Access</item>
     </string-array>
 
+    <string-array name="statistics_graphs">
+        <item>Miles Per Gallon</item>
+        <item>Dollars Per Gallon</item>
+        <item>Dollars Per Mile</item>
+    </string-array>
+
 </resources>

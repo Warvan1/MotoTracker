@@ -7,6 +7,7 @@
     <string name="maintenanceLog_named">Maintenance Log - %1$s </string>
     <string name="dashboard">Dashboard</string>
     <string name="statistics">Statistics</string>
+    <string name="statistics_named">Statistics - %1$s </string>
     <string name="accountProfile">Account Profile</string>
     <string name="login">Login</string>
     <string name="logout">Logout</string>
@@ -76,4 +77,5 @@
     <string name="noEmailAccount">There is no account attached to that email.</string>
     <string name="deleteSharedConfirmation">Are you sure you want to remove Your access to this car?</string>
     <string name="removeMyAccess">Remove My Access</string>
+    <string name="graphs">Graphs</string>
 </resources>

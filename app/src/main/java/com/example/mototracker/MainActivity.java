@@ -82,11 +82,17 @@ public class MainActivity extends AppCompatActivity {
                     _fragmentSwitcher.switchFragment(new MaintenanceLogFragment(), getSupportFragmentManager());
                 }
                 else{
-                    Toast.makeText(this, "Login to view maintenance Log", Toast.LENGTH_LONG).show();
+                    Toast.makeText(this, "Login to view Maintenance Log", Toast.LENGTH_LONG).show();
                 }
             }
             else if (menuID == R.id.statistics) {
                 Log.d("code", "stats");
+                if(_auth0.isAuthenticated()){
+                    _fragmentSwitcher.switchFragment(new StatisticsFragment(), getSupportFragmentManager());
+                }
+                else{
+                    Toast.makeText(this, "Login to view Statistics", Toast.LENGTH_LONG).show();
+                }
             }
             else if (menuID == R.id.login) {
                 Log.d("code", "login");
