@@ -19,7 +19,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@color/md_theme_primaryContainer"
-            app:titleTextColor="@color/md_theme_primary"
+            app:titleTextColor="@color/md_theme_onBackground"
             android:title="@string/app_name"
             android:elevation="3dp" />
 
@@ -38,7 +38,7 @@
         app:menu="@menu/drawer_menu_bar"
         app:headerLayout="@layout/drawer_view_header"
         app:subheaderColor="@color/md_theme_primary"
-        app:itemTextColor="@color/md_theme_secondary"
+        app:itemTextColor="@color/md_theme_onBackground"
         android:layout_gravity="start"/>
 
 </androidx.drawerlayout.widget.DrawerLayout>

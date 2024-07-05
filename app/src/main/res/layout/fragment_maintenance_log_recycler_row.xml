@@ -11,7 +11,7 @@
         android:layout_margin="8dp"
         app:cardCornerRadius="20dp"
         app:cardElevation="8dp"
-        app:cardBackgroundColor="@color/md_theme_primaryContainer_mediumContrast"
+        app:cardBackgroundColor="@color/md_theme_primaryContainer"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

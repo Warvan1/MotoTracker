@@ -53,11 +53,11 @@ public class CarManagerRecyclerViewAdapter extends RecyclerView.Adapter<CarManag
                 _carModels.getJSONObjectWrapper(position).getString("miles")));
         //handle currentCar coloring
         if(_carModels.getJSONObjectWrapper(position).getBoolean("current_car")){
-            holder._cardView.setCardBackgroundColor(_context.getResources().getColor(R.color.md_theme_tertiaryContainer_mediumContrast));
+            holder._cardView.setCardBackgroundColor(_context.getResources().getColor(R.color.md_theme_tertiaryContainer));
             holder._selectedView.setVisibility(View.VISIBLE);
         }
         else{
-            holder._cardView.setCardBackgroundColor(_context.getResources().getColor(R.color.md_theme_primaryContainer_mediumContrast));
+            holder._cardView.setCardBackgroundColor(_context.getResources().getColor(R.color.md_theme_primaryContainer));
             holder._selectedView.setVisibility(View.INVISIBLE);
         }
         //handle showing the share button if you own the car
