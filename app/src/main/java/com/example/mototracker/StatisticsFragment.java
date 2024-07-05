@@ -4,7 +4,6 @@ import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,6 +19,7 @@ import com.github.mikephil.charting.data.LineDataSet;
 import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 public class StatisticsFragment extends Fragment {
     private Auth0Authentication _auth0;
@@ -102,7 +102,7 @@ public class StatisticsFragment extends Fragment {
     public void getMaintenanceLogModelsFromAPI(){
         JSONObjectWrapper queries = new JSONObjectWrapper();
         queries.put("filter", "Fuel");
-        queries.put("allData", true);
+        queries.put("statistics", 1);
 
         new HTTPRequest(getString(R.string.api_base_url) + "/getmaintenancelog").setQueries(queries)
                 .setAuthToken(_auth0.getAccessToken(), _userProfile.getString("userid")).setCallback(res -> {
@@ -116,9 +116,9 @@ public class StatisticsFragment extends Fragment {
                     ArrayList<Entry> mpgData = new ArrayList<>();
                     ArrayList<Entry> dpgData = new ArrayList<>();
                     ArrayList<Entry> dpmData = new ArrayList<>();
-                    for(int i = 0; i < _maintenanceLogModels.length() -1; i++){
+                    for(int i = 1; i < _maintenanceLogModels.length(); i++){
                         float miles = (float) _maintenanceLogModels.getJSONObjectWrapper(i).getInt("miles");
-                        float milesNext = (float) _maintenanceLogModels.getJSONObjectWrapper(i+1).getInt("miles");
+                        float milesNext = (float) _maintenanceLogModels.getJSONObjectWrapper(i-1).getInt("miles");
                         float gallons = (float) _maintenanceLogModels.getJSONObjectWrapper(i).getInt("gallons");
                         float cost = (float) _maintenanceLogModels.getJSONObjectWrapper(i).getInt("cost");
                         miles = miles - milesNext;
