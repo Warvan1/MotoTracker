@@ -13,13 +13,16 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.github.mikephil.charting.charts.LineChart;
+import com.github.mikephil.charting.components.Description;
+import com.github.mikephil.charting.components.Legend;
+import com.github.mikephil.charting.components.XAxis;
+import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
 import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
 
 import java.util.ArrayList;
-import java.util.Collections;
 
 public class StatisticsFragment extends Fragment {
     private Auth0Authentication _auth0;
@@ -146,6 +149,41 @@ public class StatisticsFragment extends Fragment {
                     _mpgDataSet = new LineDataSet(mpgData, "Miles Per Gallon");
                     _dpgDataSet = new LineDataSet(dpgData, "Dollars Per Gallon");
                     _dpmDataSet = new LineDataSet(dpmData, "Dollars Per Mile");
+
+                    //set dataset styles
+                    _mpgDataSet.setLineWidth(4);
+                    _mpgDataSet.setCircleRadius(4);
+                    _mpgDataSet.setCircleHoleRadius(2);
+                    _mpgDataSet.setValueTextSize(10);
+                    _mpgDataSet.setValueTextColor(getResources().getColor(R.color.md_theme_onBackground));
+
+                    _dpgDataSet.setLineWidth(4);
+                    _dpgDataSet.setCircleRadius(4);
+                    _dpgDataSet.setCircleHoleRadius(2);
+                    _dpgDataSet.setValueTextSize(10);
+
+                    _dpmDataSet.setLineWidth(4);
+                    _dpmDataSet.setCircleRadius(4);
+                    _dpmDataSet.setCircleHoleRadius(2);
+                    _dpmDataSet.setValueTextSize(10);
+
+                    //set chart view styles
+                    XAxis xAxis = _chartView.getXAxis();
+                    xAxis.setEnabled(false);
+                    YAxis yAxisLeft = _chartView.getAxisLeft();
+                    yAxisLeft.setTextSize(15);
+                    yAxisLeft.setTextColor(getResources().getColor(R.color.md_theme_onBackground));
+                    YAxis yAxisRight = _chartView.getAxisRight();
+                    yAxisRight.setTextSize(15);
+                    yAxisRight.setTextColor(getResources().getColor(R.color.md_theme_onBackground));
+
+                    Legend legend = _chartView.getLegend();
+                    legend.setTextSize(15);
+                    legend.setTextColor(getResources().getColor(R.color.md_theme_onBackground));
+
+                    Description description = new Description();
+                    description.setEnabled(false);
+                    _chartView.setDescription(description);
 
                     //create the graph after we have retrieved the data
                     _graphType = "Miles Per Gallon";
