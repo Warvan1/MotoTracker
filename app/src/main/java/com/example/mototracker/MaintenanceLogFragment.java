@@ -1,8 +1,10 @@
 package com.example.mototracker;
 
 import android.app.Dialog;
+import android.graphics.PorterDuff;
 import android.os.Bundle;
 
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -69,6 +71,8 @@ public class MaintenanceLogFragment extends Fragment implements RecyclerViewInte
 
         //access add maintenance floating action button
         FloatingActionButton addMaintenanceButton = view.findViewById(R.id.add_maintenance_btn);
+        //fix the color of the floating action button icon
+        addMaintenanceButton.getDrawable().setColorFilter(ContextCompat.getColor(this.requireContext(), R.color.md_theme_onPrimary), PorterDuff.Mode.SRC_IN);
 
         //get the current car object
         new HTTPRequest(getString(R.string.api_base_url) + "/getcurrentcar")
