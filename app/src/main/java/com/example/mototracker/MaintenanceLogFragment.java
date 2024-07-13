@@ -94,7 +94,10 @@ public class MaintenanceLogFragment extends Fragment implements RecyclerViewInte
         addMaintenanceButton.getDrawable().setColorFilter(ContextCompat.getColor(this.requireContext(), R.color.md_theme_onPrimary), PorterDuff.Mode.SRC_IN);
         //floating action button on click method for adding maintenance
         addMaintenanceButton.setOnClickListener(v -> {
-            openAddItemDialog();
+            //open the add maintenance dialog box
+            AddMaintenanceDialog.open(this.requireContext(), "MaintenanceLog", _fragmentSwitcher, getParentFragmentManager(), _currentCarJSON, _parsedCost, _parsedGallons, callback -> {
+                getMaintenanceLogModelsFromAPI();
+            });
         });
 
         //get the current car object
@@ -120,7 +123,10 @@ public class MaintenanceLogFragment extends Fragment implements RecyclerViewInte
 
                     //open an add car dialog if we have parsed text input to the fragment
                     if(_parsedTextExists){
-                        openAddItemDialog();
+                        //open the add maintenance dialog box
+                        AddMaintenanceDialog.open(this.requireContext(), "MaintenanceLog", _fragmentSwitcher, getParentFragmentManager(), _currentCarJSON, _parsedCost, _parsedGallons, callback -> {
+                            getMaintenanceLogModelsFromAPI();
+                        });
                     }
 
                 }).runAsync();
@@ -166,108 +172,6 @@ public class MaintenanceLogFragment extends Fragment implements RecyclerViewInte
         linesDouble.remove(_parsedCost);
         //Gallons is the second largest number
         _parsedGallons = Collections.max(linesDouble);
-    }
-
-    public void openAddItemDialog(){
-        //if the _currentCarJSON object is null show error and return
-        if(_currentCarJSON == null){
-            Toast.makeText(this.getContext(), "Add or Select a car in the Car Manager to add maintenance.", Toast.LENGTH_LONG).show();
-            return;
-        }
-
-        //create and show add maintenance popup window
-        Dialog viewAddMaintenanceForm = new Dialog(this.requireContext());
-        viewAddMaintenanceForm.setContentView(R.layout.add_maintenance_form);
-        viewAddMaintenanceForm.show();
-
-        //access form data
-        Button readGasPumpButton = viewAddMaintenanceForm.findViewById(R.id.add_maintenance_read_gas_pump_picture);
-        EditText cost = viewAddMaintenanceForm.findViewById(R.id.add_maintenance_cost);
-        if(_parsedCost != 0){
-            cost.setText(String.valueOf(_parsedCost));
-        }
-        EditText gallons = viewAddMaintenanceForm.findViewById(R.id.add_maintenance_gallons);
-        if(_parsedGallons != 0){
-            gallons.setText(String.valueOf(_parsedGallons));
-        }
-        TextView gallonsTitle = viewAddMaintenanceForm.findViewById(R.id.add_maintenance_gallons_title);
-        EditText miles = viewAddMaintenanceForm.findViewById(R.id.add_maintenance_miles);
-        miles.setText(_currentCarJSON.getString("miles"));
-        EditText notes = viewAddMaintenanceForm.findViewById(R.id.add_maintenance_notes);
-        final String[] type = {"Fuel"};
-
-        //setup add maintenance type dropdown menu
-        Spinner type_spinner = viewAddMaintenanceForm.findViewById(R.id.add_maintenance_service_types_spinner);
-        ArrayAdapter<CharSequence> type_adapter = ArrayAdapter.createFromResource(this.requireContext(),
-                R.array.service_types, android.R.layout.simple_spinner_item);
-        type_adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        type_spinner.setAdapter(type_adapter);
-        //item selected listener for our dropdown menu
-        type_spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                type[0] = parent.getItemAtPosition(position).toString();
-                if(type[0].equals("Fuel")){
-                    gallons.setVisibility(View.VISIBLE);
-                    gallonsTitle.setVisibility(View.VISIBLE);
-                    readGasPumpButton.setVisibility(View.VISIBLE);
-                }
-                else{
-                    gallons.setVisibility(View.GONE);
-                    gallonsTitle.setVisibility(View.GONE);
-                    readGasPumpButton.setVisibility(View.GONE);
-                }
-            }
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {}
-        });
-
-        //read gas pump picture onClick listener
-        readGasPumpButton.setOnClickListener(v2 -> {
-            viewAddMaintenanceForm.dismiss();
-
-            CameraFragment fragment = CameraFragment.newInstance("MaintenanceLog", "Parse Text");
-            _fragmentSwitcher.switchFragment(fragment, getParentFragmentManager());
-        });
-
-        //add maintenance submit button onClick listener
-        Button addMaintenanceSubmitButton = viewAddMaintenanceForm.findViewById(R.id.add_maintenance_submit_btn);
-        addMaintenanceSubmitButton.setOnClickListener(v2 -> {
-            //Input Validation
-            if(miles.getText().toString().isEmpty() || Integer.parseInt(miles.getText().toString()) < _currentCarJSON.getInt("miles")){
-                miles.setText(_currentCarJSON.getString("miles"));
-            }
-            if(cost.getText().toString().isEmpty()){
-                cost.setText("0");
-            }
-            if(gallons.getText().toString().isEmpty() || !type[0].equals("Fuel")){
-                gallons.setText("0");
-            }
-            if(notes.getText().toString().isEmpty()){
-                notes.setText(" ");
-            }
-
-            //close the form
-            viewAddMaintenanceForm.dismiss();
-
-            //retrieve the form data into a json object
-            JSONObjectWrapper addMaintenanceJSON = new JSONObjectWrapper();
-            addMaintenanceJSON.put("type", type[0]);
-            addMaintenanceJSON.put("cost", Double.parseDouble(cost.getText().toString()));
-            addMaintenanceJSON.put("gallons", Double.parseDouble(gallons.getText().toString()));
-            addMaintenanceJSON.put("miles", Integer.parseInt(miles.getText().toString()));
-            addMaintenanceJSON.put("notes", notes.getText().toString());
-
-            JSONObjectWrapper query = new JSONObjectWrapper();
-            query.put("car_id", _currentCarJSON.getInt("car_id"));
-
-            //add a new maintenance item
-            new HTTPRequest(getString(R.string.api_base_url) + "/addmaintenance").setQueries(query)
-                    .setMethod("POST").setAuthToken(_auth0.getAccessToken(), _userProfile.getString("userid"))
-                    .setData(addMaintenanceJSON).setCallback(res -> {
-                        getMaintenanceLogModelsFromAPI();
-                    }).runAsync();
-        });
     }
 
     @Override

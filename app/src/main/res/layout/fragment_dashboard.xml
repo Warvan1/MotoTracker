@@ -104,6 +104,23 @@
                     app:layout_constraintStart_toStartOf="@+id/dashboard_car_total_costs"
                     app:layout_constraintTop_toBottomOf="@id/dashboard_car_total_costs" />
 
+                <Button
+                    android:id="@+id/dashboard_add_maintenance_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center|top"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginEnd="16dp"
+                    android:paddingTop="8dp"
+                    android:paddingStart="16dp"
+                    android:paddingEnd="16dp"
+                    android:paddingBottom="8dp"
+                    android:backgroundTint="@color/md_theme_primary"
+                    android:textColor="@color/md_theme_onPrimary"
+                    android:text="@string/addMaintenance"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
 
             </androidx.constraintlayout.widget.ConstraintLayout>
         </androidx.cardview.widget.CardView>

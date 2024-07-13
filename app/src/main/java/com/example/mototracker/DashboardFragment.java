@@ -1,5 +1,6 @@
 package com.example.mototracker;
 
+import android.app.Dialog;
 import android.os.Bundle;
 
 import androidx.cardview.widget.CardView;
@@ -8,25 +9,50 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.text.DecimalFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
 import java.util.TimeZone;
 
 public class DashboardFragment extends Fragment {
+    private static final String ARG_PARSED_TEXT = "parsedText";
+    private boolean _parsedTextExists = false;
+    private double _parsedCost = 0;
+    private double _parsedGallons = 0;
     private Auth0Authentication _auth0;
     private JSONObjectWrapper _userProfile;
     private FragmentSwitcher _fragmentSwitcher;
+    private JSONObjectWrapper _currentCarJSON;
 
     public DashboardFragment() {
         // Required empty public constructor
     }
 
+    public static DashboardFragment newInstance(String parsedText){
+        DashboardFragment fragment = new DashboardFragment();
+        Bundle args = new Bundle();
+        args.putString(ARG_PARSED_TEXT, parsedText);
+        fragment.setArguments(args);
+        return fragment;
+    }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if(getArguments() != null){
+            _parsedTextExists = true;
+            parseTextFromCamera(getArguments().getString(ARG_PARSED_TEXT));
+        }
     }
 
     @Override
@@ -71,6 +97,7 @@ public class DashboardFragment extends Fragment {
         TextView airFilterMiles = view.findViewById(R.id.dashboard_air_filter_miles);
         TextView inspectionTime = view.findViewById(R.id.dashboard_inspection_time);
         TextView registrationTime = view.findViewById(R.id.dashboard_registration_time);
+        Button addmaintenanceButton = view.findViewById(R.id.dashboard_add_maintenance_button);
 
         new HTTPRequest(getString(R.string.api_base_url) + "/getcurrentcar")
                 .setAuthToken(_auth0.getAccessToken(), _userProfile.getString("userid")).setCallback(res -> {
@@ -88,43 +115,82 @@ public class DashboardFragment extends Fragment {
                     fuelCard.setVisibility(View.VISIBLE);
 
                     //json object containing all of our car data
-                    JSONObjectWrapper resJSON = new JSONObjectWrapper(res);
+                    _currentCarJSON = new JSONObjectWrapper(res);
                     //used to round doubles to 2 decimal places
                     DecimalFormat df = new DecimalFormat("###.##");
 
-                    //set dashboard view items using the returned car data in resJSON
-                    carName.setText(resJSON.getString("name"));
-                    carYear.setText(resJSON.getString("year"));
-                    carMake.setText(resJSON.getString("make"));
-                    carModel.setText(resJSON.getString("model"));
-                    carMiles.setText(String.format(getString(R.string.milesFormat), resJSON.getString("miles")));
-                    carTotalCosts.setText(String.format(getString(R.string.totalCostsFormat), resJSON.getString("total_costs")));
-                    carMiles.setText(String.format(getString(R.string.milesFormat), resJSON.getString("miles")));
+                    //set dashboard view items using the returned car data in _currentCarJSON
+                    carName.setText(_currentCarJSON.getString("name"));
+                    carYear.setText(_currentCarJSON.getString("year"));
+                    carMake.setText(_currentCarJSON.getString("make"));
+                    carModel.setText(_currentCarJSON.getString("model"));
+                    carMiles.setText(String.format(getString(R.string.milesFormat), _currentCarJSON.getString("miles")));
+                    carTotalCosts.setText(String.format(getString(R.string.totalCostsFormat), _currentCarJSON.getString("total_costs")));
+                    carMiles.setText(String.format(getString(R.string.milesFormat), _currentCarJSON.getString("miles")));
                     double mpg = 0;
-                    if(resJSON.getDouble("total_gallons") != 0){
-                        mpg = resJSON.getInt("miles") / resJSON.getDouble("total_gallons");
+                    if(_currentCarJSON.getDouble("total_gallons") != 0){
+                        mpg = _currentCarJSON.getInt("miles") / _currentCarJSON.getDouble("total_gallons");
                     }
                     fuelMilesPerGallon.setText(String.format(getString(R.string.milesPerGallonFormat), df.format(mpg)));
                     double dpg = 0;
-                    if(resJSON.getDouble("total_gallons") != 0){
-                        dpg = resJSON.getDouble("total_fuel_costs") / resJSON.getDouble("total_gallons");
+                    if(_currentCarJSON.getDouble("total_gallons") != 0){
+                        dpg = _currentCarJSON.getDouble("total_fuel_costs") / _currentCarJSON.getDouble("total_gallons");
                     }
                     fuelDollarsPerGallon.setText(String.format(getString(R.string.dollarsPerGallonFormat), df.format(dpg)));
                     double dpm = 0;
-                    if(resJSON.getDouble("miles") != 0){
-                        dpm = resJSON.getDouble("total_fuel_costs") / resJSON.getDouble("miles");
+                    if(_currentCarJSON.getDouble("miles") != 0){
+                        dpm = _currentCarJSON.getDouble("total_fuel_costs") / _currentCarJSON.getDouble("miles");
                     }
                     fuelDollarsPerMile.setText(String.format(getString(R.string.dollarsPerMileFormat), df.format(dpm)));
 
-                    handleEventTracking(resJSON, oilChangeCard, oilChangeTime, oilChangeMiles, "oil_change_time", "oil_change_miles");
-                    handleEventTracking(resJSON, tireRotationCard, tireRotationTime, tireRotationMiles, "tire_rotation_time", "tire_rotation_miles");
-                    handleEventTracking(resJSON, airFilterCard, airFilterTime, airFilterMiles, "air_filter_time", "air_filter_miles");
-                    handleEventTracking(resJSON, inspectionCard, inspectionTime, "inspection_time");
-                    handleEventTracking(resJSON, registrationCard, registrationTime, "registration_time");
+                    handleEventTracking(_currentCarJSON, oilChangeCard, oilChangeTime, oilChangeMiles, "oil_change_time", "oil_change_miles");
+                    handleEventTracking(_currentCarJSON, tireRotationCard, tireRotationTime, tireRotationMiles, "tire_rotation_time", "tire_rotation_miles");
+                    handleEventTracking(_currentCarJSON, airFilterCard, airFilterTime, airFilterMiles, "air_filter_time", "air_filter_miles");
+                    handleEventTracking(_currentCarJSON, inspectionCard, inspectionTime, "inspection_time");
+                    handleEventTracking(_currentCarJSON, registrationCard, registrationTime, "registration_time");
+                    
+                    //open an add car dialog if we have parsed text input to the fragment
+                    if(_parsedTextExists){
+                        //open the add maintenance dialog box
+                        AddMaintenanceDialog.open(this.requireContext(), "Dashboard", _fragmentSwitcher, getParentFragmentManager(), _currentCarJSON, _parsedCost, _parsedGallons, callback -> {
+                            _fragmentSwitcher.switchFragment(new DashboardFragment(), getParentFragmentManager());
+                        });
+                    }
 
                 }).runAsync();
 
+        addmaintenanceButton.setOnClickListener(v -> {
+            //open the add maintenance dialog box
+            AddMaintenanceDialog.open(this.requireContext(), "Dashboard", _fragmentSwitcher, getParentFragmentManager(), _currentCarJSON, _parsedCost, _parsedGallons, callback -> {
+                _fragmentSwitcher.switchFragment(new DashboardFragment(), getParentFragmentManager());
+            });
+        });
+
         return view;
+    }
+
+    public void parseTextFromCamera(String text){
+        if(text == null){
+            return;
+        }
+        String[] lines = text.split("\n");
+        if(lines.length < 2){
+            return;
+        }
+        ArrayList<Double> linesDouble = new ArrayList<>();
+        for (int i = 0; i < lines.length; i++) {
+            try{
+                linesDouble.add(Double.parseDouble(lines[i]));
+            }
+            catch(NumberFormatException e){
+                linesDouble.add(0.0);
+            }
+        }
+        //Cost is the largest parsed number
+        _parsedCost = Collections.max(linesDouble);
+        linesDouble.remove(_parsedCost);
+        //Gallons is the second largest number
+        _parsedGallons = Collections.max(linesDouble);
     }
 
     public void handleEventTracking(JSONObjectWrapper resJSON, CardView cardView, TextView timeView, TextView milesView, String time, String miles){
