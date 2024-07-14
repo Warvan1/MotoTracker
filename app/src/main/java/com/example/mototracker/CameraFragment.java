@@ -41,10 +41,8 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executor;
 
 public class CameraFragment extends Fragment {
-    private static final String ARG_FRAGMENT_NAME = "fragmentName";
-    private static final String ARG_TASK = "task";
-    private String _parentFragmentName = "";
-    private String _task = "";
+    private static final String ARG_METADATA_JSON = "metadataJSON";
+    private JSONObjectWrapper _addMaintenanceDataJSON;
     private Auth0Authentication _auth0;
     private FragmentSwitcher _fragmentSwitcher;
     private ListenableFuture<ProcessCameraProvider> _cameraProviderFuture;
@@ -57,11 +55,10 @@ public class CameraFragment extends Fragment {
         // Required empty public constructor
     }
 
-    public static CameraFragment newInstance(String fragmentName, String task){
+    public static CameraFragment newInstance(String metadataJSON){
         CameraFragment fragment = new CameraFragment();
         Bundle args = new Bundle();
-        args.putString(ARG_FRAGMENT_NAME, fragmentName);
-        args.putString(ARG_TASK, task);
+        args.putString(ARG_METADATA_JSON, metadataJSON);
         fragment.setArguments(args);
         return fragment;
     }
@@ -70,8 +67,7 @@ public class CameraFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if(getArguments() != null){
-            _parentFragmentName = getArguments().getString(ARG_FRAGMENT_NAME);
-            _task = getArguments().getString(ARG_TASK);
+            _addMaintenanceDataJSON = new JSONObjectWrapper(getArguments().getString(ARG_METADATA_JSON));
         }
     }
 
@@ -116,10 +112,11 @@ public class CameraFragment extends Fragment {
 
         pictureButton.setOnClickListener(v -> {
             if(_cameraAccessPermission){
-                if(_task.isEmpty() || _task.equals("Take Photo")){
+                String task = _addMaintenanceDataJSON.getString("task");
+                if(task.isEmpty() || task.equals("Take Photo")){
                     capturePhoto();
                 }
-                if(_task.equals("Parse Text")){
+                if(task.equals("Parse Text")){
                     capturePhotoParseText();
                 }
             }
@@ -199,7 +196,11 @@ public class CameraFragment extends Fragment {
                 new ImageCapture.OnImageSavedCallback() {
                     @Override
                     public void onImageSaved(@NonNull ImageCapture.OutputFileResults outputFileResults) {
-                        parentFragmentSwitcher(outputFileResults.getSavedUri(), "");
+                        Uri uri = outputFileResults.getSavedUri();
+                        if(uri != null){
+                            _addMaintenanceDataJSON.put("photoURI", uri.toString());
+                        }
+                        parentFragmentSwitcher();
                     }
                     @Override
                     public void onError(@NonNull ImageCaptureException exception) {
@@ -222,7 +223,8 @@ public class CameraFragment extends Fragment {
                 TextRecognizer recognizer = TextRecognition.getClient(TextRecognizerOptions.DEFAULT_OPTIONS);
                 recognizer.process(inputImage).addOnSuccessListener(text -> {
                     String result = text.getText();
-                    parentFragmentSwitcher(null, result);
+                    _addMaintenanceDataJSON.put("parsedText", result);
+                    parentFragmentSwitcher();
                 });
 
                 image.close();
@@ -230,12 +232,13 @@ public class CameraFragment extends Fragment {
         });
     }
 
-    private void parentFragmentSwitcher(Uri uri, String parsedText){
-        if(_parentFragmentName.equals("MaintenanceLog")){
-            _fragmentSwitcher.switchFragment(MaintenanceLogFragment.newInstance(parsedText), getParentFragmentManager());
+    private void parentFragmentSwitcher(){
+        String parentFragmentName = _addMaintenanceDataJSON.getString("fragmentName");
+        if(parentFragmentName.equals("MaintenanceLog")){
+            _fragmentSwitcher.switchFragment(MaintenanceLogFragment.newInstance(_addMaintenanceDataJSON.toString()), getParentFragmentManager());
         }
-        if(_parentFragmentName.equals("Dashboard")){
-            _fragmentSwitcher.switchFragment(DashboardFragment.newInstance(parsedText), getParentFragmentManager());
+        if(parentFragmentName.equals("Dashboard")){
+            _fragmentSwitcher.switchFragment(DashboardFragment.newInstance(_addMaintenanceDataJSON.toString()), getParentFragmentManager());
         }
     }
 

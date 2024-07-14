@@ -27,10 +27,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 
 public class MaintenanceLogFragment extends Fragment implements RecyclerViewInterface {
-    private static final String ARG_PARSED_TEXT = "parsedText";
-    private boolean _parsedTextExists = false;
-    private double _parsedCost = 0;
-    private double _parsedGallons = 0;
+    private static final String ARG_METADATA_JSON = "metadataJSON";
+    private JSONObjectWrapper _addMaintenanceDataJSON = new JSONObjectWrapper();
     private Auth0Authentication _auth0;
     private JSONObjectWrapper _userProfile;
     private FragmentSwitcher _fragmentSwitcher;
@@ -47,10 +45,10 @@ public class MaintenanceLogFragment extends Fragment implements RecyclerViewInte
         // Required empty public constructor
     }
 
-    public static MaintenanceLogFragment newInstance(String parsedText){
+    public static MaintenanceLogFragment newInstance(String metadataJSON){
         MaintenanceLogFragment fragment = new MaintenanceLogFragment();
         Bundle args = new Bundle();
-        args.putString(ARG_PARSED_TEXT, parsedText);
+        args.putString(ARG_METADATA_JSON, metadataJSON);
         fragment.setArguments(args);
         return fragment;
     }
@@ -59,8 +57,7 @@ public class MaintenanceLogFragment extends Fragment implements RecyclerViewInte
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if(getArguments() != null){
-            _parsedTextExists = true;
-            parseTextFromCamera(getArguments().getString(ARG_PARSED_TEXT));
+            _addMaintenanceDataJSON = new JSONObjectWrapper(AddMaintenanceDialog.parseCameraOutput(getArguments().getString(ARG_METADATA_JSON)));
         }
     }
 
@@ -95,7 +92,8 @@ public class MaintenanceLogFragment extends Fragment implements RecyclerViewInte
         //floating action button on click method for adding maintenance
         addMaintenanceButton.setOnClickListener(v -> {
             //open the add maintenance dialog box
-            AddMaintenanceDialog.open(this.requireContext(), "MaintenanceLog", _fragmentSwitcher, getParentFragmentManager(), _currentCarJSON, _parsedCost, _parsedGallons, callback -> {
+            _addMaintenanceDataJSON.put("fragmentName", "MaintenanceLog");
+            AddMaintenanceDialog.open(this.requireContext(), _fragmentSwitcher, getParentFragmentManager(), _currentCarJSON, _addMaintenanceDataJSON, callback -> {
                 getMaintenanceLogModelsFromAPI();
             });
         });
@@ -122,9 +120,15 @@ public class MaintenanceLogFragment extends Fragment implements RecyclerViewInte
                     }
 
                     //open an add car dialog if we have parsed text input to the fragment
-                    if(_parsedTextExists){
+                    String parsedText = "";
+                    try{
+                        parsedText = _addMaintenanceDataJSON.getString("parsedText");
+                    }
+                    catch (RuntimeException e){}
+                    if(!parsedText.isEmpty()){
                         //open the add maintenance dialog box
-                        AddMaintenanceDialog.open(this.requireContext(), "MaintenanceLog", _fragmentSwitcher, getParentFragmentManager(), _currentCarJSON, _parsedCost, _parsedGallons, callback -> {
+                        _addMaintenanceDataJSON.put("fragmentName", "MaintenanceLog");
+                        AddMaintenanceDialog.open(this.requireContext(), _fragmentSwitcher, getParentFragmentManager(), _currentCarJSON, _addMaintenanceDataJSON, callback -> {
                             getMaintenanceLogModelsFromAPI();
                         });
                     }
@@ -148,30 +152,6 @@ public class MaintenanceLogFragment extends Fragment implements RecyclerViewInte
             public void onNothingSelected(AdapterView<?> parent) {}
         });
         return view;
-    }
-
-    public void parseTextFromCamera(String text){
-        if(text == null){
-            return;
-        }
-        String[] lines = text.split("\n");
-        if(lines.length < 2){
-            return;
-        }
-        ArrayList<Double> linesDouble = new ArrayList<>();
-        for (int i = 0; i < lines.length; i++) {
-            try{
-                linesDouble.add(Double.parseDouble(lines[i]));
-            }
-            catch(NumberFormatException e){
-                linesDouble.add(0.0);
-            }
-        }
-        //Cost is the largest parsed number
-        _parsedCost = Collections.max(linesDouble);
-        linesDouble.remove(_parsedCost);
-        //Gallons is the second largest number
-        _parsedGallons = Collections.max(linesDouble);
     }
 
     @Override

@@ -13,11 +13,13 @@ import android.widget.Toast;
 
 import androidx.fragment.app.FragmentManager;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.function.Consumer;
 
 public class AddMaintenanceDialog {
 
-    public static void open(Context context, String fragmentName, FragmentSwitcher fragmentSwitcher, FragmentManager fragmentManager, JSONObjectWrapper currentCarJSON, double parsedCost, double parsedGallons, Consumer<String> callback){
+    public static void open(Context context, FragmentSwitcher fragmentSwitcher, FragmentManager fragmentManager, JSONObjectWrapper currentCarJSON, JSONObjectWrapper addMaintenanceDataJSON, Consumer<String> callback){
         //if the _currentCarJSON object is null show error and return
         if(currentCarJSON == null){
             Toast.makeText(context, "Add or Select a car in the Car Manager to add maintenance.", Toast.LENGTH_LONG).show();
@@ -30,6 +32,17 @@ public class AddMaintenanceDialog {
         }
         JSONObjectWrapper userProfile = auth0.getUserProfile();
 
+        double parsedCost = 0;
+        double parsedGallons = 0;
+        try{
+            parsedCost = addMaintenanceDataJSON.getDouble("parsedCost");
+        }
+        catch(RuntimeException e){}
+        try{
+            parsedGallons = addMaintenanceDataJSON.getDouble("parsedGallons");
+        }
+        catch(RuntimeException e){}
+
         //create and show add maintenance popup window
         Dialog viewAddMaintenanceForm = new Dialog(context);
         viewAddMaintenanceForm.setContentView(R.layout.add_maintenance_form);
@@ -38,10 +51,10 @@ public class AddMaintenanceDialog {
         //access form data
         Button readGasPumpButton = viewAddMaintenanceForm.findViewById(R.id.add_maintenance_read_gas_pump_picture);
         EditText cost = viewAddMaintenanceForm.findViewById(R.id.add_maintenance_cost);
+        EditText gallons = viewAddMaintenanceForm.findViewById(R.id.add_maintenance_gallons);
         if(parsedCost != 0){
             cost.setText(String.valueOf(parsedCost));
         }
-        EditText gallons = viewAddMaintenanceForm.findViewById(R.id.add_maintenance_gallons);
         if(parsedGallons != 0){
             gallons.setText(String.valueOf(parsedGallons));
         }
@@ -81,7 +94,8 @@ public class AddMaintenanceDialog {
         readGasPumpButton.setOnClickListener(v2 -> {
             viewAddMaintenanceForm.dismiss();
 
-            CameraFragment fragment = CameraFragment.newInstance(fragmentName, "Parse Text");
+            addMaintenanceDataJSON.put("task", "Parse Text");
+            CameraFragment fragment = CameraFragment.newInstance(addMaintenanceDataJSON.toString());
             fragmentSwitcher.switchFragment(fragment, fragmentManager);
         });
 
@@ -130,6 +144,39 @@ public class AddMaintenanceDialog {
                         .setData(addMaintenanceJSON).runAsync();
             }
         });
+    }
 
+    public static String parseCameraOutput(String addMaintenanceDataJSONString){
+        JSONObjectWrapper addMaintenanceDataJSON = new JSONObjectWrapper(addMaintenanceDataJSONString);
+        String text;
+        try{
+            text = addMaintenanceDataJSON.getString("parsedText");
+        }
+        catch(RuntimeException e){
+            return addMaintenanceDataJSON.toString();
+        }
+
+        String[] lines = text.split("\n");
+        if(lines.length < 2){
+            return addMaintenanceDataJSON.toString();
+        }
+
+        ArrayList<Double> linesDouble = new ArrayList<>();
+        for (int i = 0; i < lines.length; i++) {
+            try{
+                linesDouble.add(Double.parseDouble(lines[i]));
+            }
+            catch(NumberFormatException e){
+                linesDouble.add(0.0);
+            }
+        }
+        //Cost is the largest parsed number
+        double max = Collections.max(linesDouble);
+        addMaintenanceDataJSON.put("parsedCost", max);
+        linesDouble.remove(max);
+        //Gallons is the second largest number
+        addMaintenanceDataJSON.put("parsedGallons", Collections.max(linesDouble));
+
+        return addMaintenanceDataJSON.toString();
     }
 }

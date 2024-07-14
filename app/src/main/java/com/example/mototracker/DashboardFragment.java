@@ -25,10 +25,8 @@ import java.util.Date;
 import java.util.TimeZone;
 
 public class DashboardFragment extends Fragment {
-    private static final String ARG_PARSED_TEXT = "parsedText";
-    private boolean _parsedTextExists = false;
-    private double _parsedCost = 0;
-    private double _parsedGallons = 0;
+    private static final String ARG_METADATA_JSON = "metadataJSON";
+    private JSONObjectWrapper _addMaintenanceDataJSON = new JSONObjectWrapper();
     private Auth0Authentication _auth0;
     private JSONObjectWrapper _userProfile;
     private FragmentSwitcher _fragmentSwitcher;
@@ -38,10 +36,10 @@ public class DashboardFragment extends Fragment {
         // Required empty public constructor
     }
 
-    public static DashboardFragment newInstance(String parsedText){
+    public static DashboardFragment newInstance(String metadataJSON){
         DashboardFragment fragment = new DashboardFragment();
         Bundle args = new Bundle();
-        args.putString(ARG_PARSED_TEXT, parsedText);
+        args.putString(ARG_METADATA_JSON, metadataJSON);
         fragment.setArguments(args);
         return fragment;
     }
@@ -50,8 +48,7 @@ public class DashboardFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if(getArguments() != null){
-            _parsedTextExists = true;
-            parseTextFromCamera(getArguments().getString(ARG_PARSED_TEXT));
+            _addMaintenanceDataJSON = new JSONObjectWrapper(AddMaintenanceDialog.parseCameraOutput(getArguments().getString(ARG_METADATA_JSON)));
         }
     }
 
@@ -150,9 +147,15 @@ public class DashboardFragment extends Fragment {
                     handleEventTracking(_currentCarJSON, registrationCard, registrationTime, "registration_time");
                     
                     //open an add car dialog if we have parsed text input to the fragment
-                    if(_parsedTextExists){
+                    String parsedText = "";
+                    try{
+                        parsedText = _addMaintenanceDataJSON.getString("parsedText");
+                    }
+                    catch (RuntimeException e){}
+                    if(!parsedText.isEmpty()){
                         //open the add maintenance dialog box
-                        AddMaintenanceDialog.open(this.requireContext(), "Dashboard", _fragmentSwitcher, getParentFragmentManager(), _currentCarJSON, _parsedCost, _parsedGallons, callback -> {
+                        _addMaintenanceDataJSON.put("fragmentName", "Dashboard");
+                        AddMaintenanceDialog.open(this.requireContext(), _fragmentSwitcher, getParentFragmentManager(), _currentCarJSON, _addMaintenanceDataJSON, callback -> {
                             _fragmentSwitcher.switchFragment(new DashboardFragment(), getParentFragmentManager());
                         });
                     }
@@ -161,36 +164,14 @@ public class DashboardFragment extends Fragment {
 
         addmaintenanceButton.setOnClickListener(v -> {
             //open the add maintenance dialog box
-            AddMaintenanceDialog.open(this.requireContext(), "Dashboard", _fragmentSwitcher, getParentFragmentManager(), _currentCarJSON, _parsedCost, _parsedGallons, callback -> {
+            _addMaintenanceDataJSON.put("fragmentName", "Dashboard");
+
+            AddMaintenanceDialog.open(this.requireContext(), _fragmentSwitcher, getParentFragmentManager(), _currentCarJSON, _addMaintenanceDataJSON, callback -> {
                 _fragmentSwitcher.switchFragment(new DashboardFragment(), getParentFragmentManager());
             });
         });
 
         return view;
-    }
-
-    public void parseTextFromCamera(String text){
-        if(text == null){
-            return;
-        }
-        String[] lines = text.split("\n");
-        if(lines.length < 2){
-            return;
-        }
-        ArrayList<Double> linesDouble = new ArrayList<>();
-        for (int i = 0; i < lines.length; i++) {
-            try{
-                linesDouble.add(Double.parseDouble(lines[i]));
-            }
-            catch(NumberFormatException e){
-                linesDouble.add(0.0);
-            }
-        }
-        //Cost is the largest parsed number
-        _parsedCost = Collections.max(linesDouble);
-        linesDouble.remove(_parsedCost);
-        //Gallons is the second largest number
-        _parsedGallons = Collections.max(linesDouble);
     }
 
     public void handleEventTracking(JSONObjectWrapper resJSON, CardView cardView, TextView timeView, TextView milesView, String time, String miles){
