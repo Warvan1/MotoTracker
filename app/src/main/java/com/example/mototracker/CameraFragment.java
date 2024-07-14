@@ -48,6 +48,7 @@ public class CameraFragment extends Fragment {
     private ListenableFuture<ProcessCameraProvider> _cameraProviderFuture;
     private PreviewView _previewView;
     private SeekBar _zoomSeekBar;
+    private ImageView _toggleFlashButton;
     private ImageCapture _imageCapture;
     private boolean _cameraAccessPermission;
 
@@ -88,6 +89,7 @@ public class CameraFragment extends Fragment {
         }
 
         ImageView pictureButton = view.findViewById(R.id.camera_take_photo);
+        _toggleFlashButton = view.findViewById(R.id.camera_flash_toggle);
         _previewView = view.findViewById(R.id.camera_preview_view);
         _zoomSeekBar = view.findViewById(R.id.camera_zoom_seekBar);
 
@@ -118,6 +120,19 @@ public class CameraFragment extends Fragment {
                 }
                 if(task.equals("Parse Text")){
                     capturePhotoParseText();
+                }
+            }
+        });
+
+        _toggleFlashButton.setOnClickListener(v -> {
+            if(_cameraAccessPermission && _imageCapture != null){
+                if(_imageCapture.getFlashMode() == ImageCapture.FLASH_MODE_ON){
+                    _imageCapture.setFlashMode(ImageCapture.FLASH_MODE_OFF);
+                    _toggleFlashButton.setImageDrawable(getResources().getDrawable(R.drawable.baseline_flash_off_24));
+                }
+                else{
+                    _imageCapture.setFlashMode(ImageCapture.FLASH_MODE_ON);
+                    _toggleFlashButton.setImageDrawable(getResources().getDrawable(R.drawable.baseline_flash_on_24));
                 }
             }
         });
@@ -158,6 +173,14 @@ public class CameraFragment extends Fragment {
 
         Camera camera = cameraProvider.bindToLifecycle(this, cameraSelector, preview, _imageCapture);
         setupZoomControls(camera);
+
+        //set the initial state of the flashMode image
+        if(_imageCapture.getFlashMode() == ImageCapture.FLASH_MODE_ON){
+            _toggleFlashButton.setImageDrawable(getResources().getDrawable(R.drawable.baseline_flash_on_24));
+        }
+        else{
+            _toggleFlashButton.setImageDrawable(getResources().getDrawable(R.drawable.baseline_flash_off_24));
+        }
     }
 
     private void setupZoomControls(Camera camera) {
