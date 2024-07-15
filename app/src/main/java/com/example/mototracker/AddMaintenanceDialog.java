@@ -34,12 +34,17 @@ public class AddMaintenanceDialog {
 
         double parsedCost = 0;
         double parsedGallons = 0;
+        int parsedOdometer = 0;
         try{
             parsedCost = addMaintenanceDataJSON.getDouble("parsedCost");
         }
         catch(RuntimeException e){}
         try{
             parsedGallons = addMaintenanceDataJSON.getDouble("parsedGallons");
+        }
+        catch(RuntimeException e){}
+        try{
+            parsedOdometer = addMaintenanceDataJSON.getInt("parsedOdometer");
         }
         catch(RuntimeException e){}
 
@@ -49,20 +54,28 @@ public class AddMaintenanceDialog {
         viewAddMaintenanceForm.show();
 
         //access form data
-        Button readGasPumpButton = viewAddMaintenanceForm.findViewById(R.id.add_maintenance_read_gas_pump_picture);
+        Button readGasPumpButton = viewAddMaintenanceForm.findViewById(R.id.add_maintenance_read_gas_pump);
+        Button readOdometerButton = viewAddMaintenanceForm.findViewById(R.id.add_maintenance_read_odometer);
         EditText cost = viewAddMaintenanceForm.findViewById(R.id.add_maintenance_cost);
         EditText gallons = viewAddMaintenanceForm.findViewById(R.id.add_maintenance_gallons);
+        TextView gallonsTitle = viewAddMaintenanceForm.findViewById(R.id.add_maintenance_gallons_title);
+        EditText miles = viewAddMaintenanceForm.findViewById(R.id.add_maintenance_miles);
+        EditText notes = viewAddMaintenanceForm.findViewById(R.id.add_maintenance_notes);
+        final String[] type = {"Fuel"};
+
+        //set text values for input
         if(parsedCost != 0){
             cost.setText(String.valueOf(parsedCost));
         }
         if(parsedGallons != 0){
             gallons.setText(String.valueOf(parsedGallons));
         }
-        TextView gallonsTitle = viewAddMaintenanceForm.findViewById(R.id.add_maintenance_gallons_title);
-        EditText miles = viewAddMaintenanceForm.findViewById(R.id.add_maintenance_miles);
-        miles.setText(currentCarJSON.getString("miles"));
-        EditText notes = viewAddMaintenanceForm.findViewById(R.id.add_maintenance_notes);
-        final String[] type = {"Fuel"};
+        if(parsedOdometer > currentCarJSON.getInt("miles")){
+            miles.setText(String.valueOf(parsedOdometer));
+        }
+        else{
+            miles.setText(currentCarJSON.getString("miles"));
+        }
 
         //setup add maintenance type dropdown menu
         Spinner type_spinner = viewAddMaintenanceForm.findViewById(R.id.add_maintenance_service_types_spinner);
@@ -95,6 +108,17 @@ public class AddMaintenanceDialog {
             viewAddMaintenanceForm.dismiss();
 
             addMaintenanceDataJSON.put("task", "Parse Text");
+            addMaintenanceDataJSON.put("taskIdentifier", "Gas Pump");
+            CameraFragment fragment = CameraFragment.newInstance(addMaintenanceDataJSON.toString());
+            fragmentSwitcher.switchFragment(fragment, fragmentManager);
+        });
+
+        //read odometer picture onClick listener
+        readOdometerButton.setOnClickListener(v2 -> {
+            viewAddMaintenanceForm.dismiss();
+
+            addMaintenanceDataJSON.put("task", "Parse Text");
+            addMaintenanceDataJSON.put("taskIdentifier", "Odometer");
             CameraFragment fragment = CameraFragment.newInstance(addMaintenanceDataJSON.toString());
             fragmentSwitcher.switchFragment(fragment, fragmentManager);
         });
@@ -148,34 +172,60 @@ public class AddMaintenanceDialog {
 
     public static String parseCameraOutput(String addMaintenanceDataJSONString){
         JSONObjectWrapper addMaintenanceDataJSON = new JSONObjectWrapper(addMaintenanceDataJSONString);
+        //get the parsedText and the taskIdentifier
         String text;
+        String taskIdentifier;
         try{
             text = addMaintenanceDataJSON.getString("parsedText");
+            taskIdentifier = addMaintenanceDataJSON.getString("taskIdentifier");
         }
         catch(RuntimeException e){
-            return addMaintenanceDataJSON.toString();
+            return addMaintenanceDataJSONString;
         }
 
-        String[] lines = text.split("\n");
-        if(lines.length < 2){
-            return addMaintenanceDataJSON.toString();
+        if(taskIdentifier.equals("Gas Pump")){
+            String[] lines = text.split("\n");
+            ArrayList<Double> linesDouble = new ArrayList<>();
+            for (int i = 0; i < lines.length; i++) {
+                try{
+                    linesDouble.add(Double.parseDouble(lines[i]));
+                }
+                catch(NumberFormatException e){
+                    linesDouble.add(0.0);
+                }
+            }
+
+            if(lines.length < 2){
+                return addMaintenanceDataJSONString;
+            }
+
+            //Cost is the largest parsed number
+            double max = Collections.max(linesDouble);
+            addMaintenanceDataJSON.put("parsedCost", max);
+            linesDouble.remove(max);
+            //Gallons is the second largest number
+            addMaintenanceDataJSON.put("parsedGallons", Collections.max(linesDouble));
         }
 
-        ArrayList<Double> linesDouble = new ArrayList<>();
-        for (int i = 0; i < lines.length; i++) {
-            try{
-                linesDouble.add(Double.parseDouble(lines[i]));
+        if(taskIdentifier.equals("Odometer")){
+            String[] lines = text.split("\n");
+            ArrayList<Integer> linesInteger = new ArrayList<>();
+            for (int i = 0; i < lines.length; i++) {
+                try{
+                    linesInteger.add(Integer.parseInt(lines[i]));
+                }
+                catch(NumberFormatException e){
+                    linesInteger.add(0);
+                }
             }
-            catch(NumberFormatException e){
-                linesDouble.add(0.0);
+
+            if(lines.length < 1){
+                return addMaintenanceDataJSONString;
             }
+
+            //odometer reading is the largest parsed integer
+            addMaintenanceDataJSON.put("parsedOdometer", Collections.max(linesInteger));
         }
-        //Cost is the largest parsed number
-        double max = Collections.max(linesDouble);
-        addMaintenanceDataJSON.put("parsedCost", max);
-        linesDouble.remove(max);
-        //Gallons is the second largest number
-        addMaintenanceDataJSON.put("parsedGallons", Collections.max(linesDouble));
 
         return addMaintenanceDataJSON.toString();
     }

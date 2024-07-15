@@ -31,15 +31,35 @@
 
     </LinearLayout>
 
-    <Button
-        android:id="@+id/add_maintenance_read_gas_pump_picture"
+    <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:paddingBottom="14dp"
-        android:paddingTop="14dp"
-        android:backgroundTint="@color/md_theme_primary"
-        android:text="@string/readGasPumpPicture"/>
+        android:layout_gravity="center">
+
+        <Button
+            android:id="@+id/add_maintenance_read_gas_pump"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:paddingBottom="14dp"
+            android:paddingTop="14dp"
+            android:layout_marginEnd="8dp"
+            android:backgroundTint="@color/md_theme_primary"
+            android:text="@string/gasPump"/>
+
+        <Button
+            android:id="@+id/add_maintenance_read_odometer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:paddingBottom="14dp"
+            android:paddingTop="14dp"
+            android:layout_marginStart="8dp"
+            android:backgroundTint="@color/md_theme_primary"
+            android:text="@string/odometer"/>
+
+    </LinearLayout>
+
 
     <LinearLayout
         android:layout_width="wrap_content"
