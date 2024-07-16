@@ -66,7 +66,18 @@ public class CarManagerRecyclerViewAdapter extends RecyclerView.Adapter<CarManag
         else{
             holder._shareButtonView.setVisibility(View.GONE);
         }
-        //TODO: Get Image for the view here
+
+        //get the car image with the car_id
+        JSONObjectWrapper query = new JSONObjectWrapper();
+        query.put("car_id", _carModels.getJSONObjectWrapper(position).getInt("car_id"));
+
+        new HTTPRequest(_context.getResources().getString(R.string.api_base_url) + "/downloadCarImage").setQueries(query)
+                .setAuthToken(_auth0.getAccessToken(), _userProfile.getString("userid")).setImageCallback(bitmap -> {
+                    if(bitmap != null){
+                        holder._carImageView.setImageBitmap(bitmap);
+                    }
+                }).runAsync();
+
     }
 
     @Override

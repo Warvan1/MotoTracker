@@ -13,6 +13,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -70,6 +71,7 @@ public class DashboardFragment extends Fragment {
         _userProfile = _auth0.getUserProfile();
 
         //get dashboard view items
+        CardView photoCard = view.findViewById(R.id.dashboard_photo_card);
         CardView carCard = view.findViewById(R.id.dashboard_car_card);
         CardView fuelCard = view.findViewById(R.id.dashboard_fuel_card);
         CardView oilChangeCard = view.findViewById(R.id.dashboard_oil_change_card);
@@ -95,9 +97,11 @@ public class DashboardFragment extends Fragment {
         TextView inspectionTime = view.findViewById(R.id.dashboard_inspection_time);
         TextView registrationTime = view.findViewById(R.id.dashboard_registration_time);
         Button addmaintenanceButton = view.findViewById(R.id.dashboard_add_maintenance_button);
+        ImageView carPhoto = view.findViewById(R.id.dashboard_photo);
 
         new HTTPRequest(getString(R.string.api_base_url) + "/getcurrentcar")
                 .setAuthToken(_auth0.getAccessToken(), _userProfile.getString("userid")).setCallback(res -> {
+                    photoCard.setVisibility(View.GONE);
                     if(res.equals("null")){
                         carCard.setVisibility(View.GONE);
                         fuelCard.setVisibility(View.GONE);
@@ -160,6 +164,17 @@ public class DashboardFragment extends Fragment {
                         });
                     }
 
+                    //get the current car photo
+                    JSONObjectWrapper query = new JSONObjectWrapper();
+                    query.put("car_id", _currentCarJSON.getInt("car_id"));
+
+                    new HTTPRequest(getString(R.string.api_base_url) + "/downloadCarImage").setQueries(query)
+                            .setAuthToken(_auth0.getAccessToken(), _userProfile.getString("userid")).setImageCallback(bitmap -> {
+                                if(bitmap != null){
+                                    photoCard.setVisibility(View.VISIBLE);
+                                    carPhoto.setImageBitmap(bitmap);
+                                }
+                            }).runAsync();
                 }).runAsync();
 
         addmaintenanceButton.setOnClickListener(v -> {

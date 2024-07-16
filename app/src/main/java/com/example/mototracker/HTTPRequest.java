@@ -1,6 +1,8 @@
 package com.example.mototracker;
 
 import android.content.ContentResolver;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Handler;
 import android.os.Looper;
@@ -33,6 +35,8 @@ public class HTTPRequest{
     private Uri _photoURI;
     private Consumer<String> _callback;
     private String _response;
+    private Consumer<Bitmap> _imageCallback;
+    private Bitmap _imageBitmap;
     public HTTPRequest(String url){
         _url = url;
         _method = "GET";
@@ -68,6 +72,10 @@ public class HTTPRequest{
         _callback = callback;
         return this;
     }
+    public HTTPRequest setImageCallback(Consumer<Bitmap> imageCallback){
+        _imageCallback = imageCallback;
+        return this;
+    }
     public HTTPRequest setQueries(JSONObjectWrapper queries){
         Iterator<String> keys = queries.keys();
         StringBuilder queryBuilder = new StringBuilder();
@@ -96,6 +104,9 @@ public class HTTPRequest{
                 //so that you can run the callback on the ui thread after the http request finishes
                 if(_callback != null){
                     new Handler(Looper.getMainLooper()).post(() -> _callback.accept(_response));
+                }
+                if(_imageCallback != null){
+                    new Handler(Looper.getMainLooper()).post(() -> _imageCallback.accept(_imageBitmap));
                 }
             }
         }).start();
@@ -165,11 +176,17 @@ public class HTTPRequest{
                 throw new IOException("Invalid response from server: " + code);
             }
 
-            BufferedReader rd = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()));
-
-            String line;
-            while ((line = rd.readLine()) != null) {
-                responseBuilder.append(line);
+            if(_imageCallback == null){
+                BufferedReader rd = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()));
+                String line;
+                while ((line = rd.readLine()) != null) {
+                    responseBuilder.append(line);
+                }
+            }
+            else{
+                InputStream inputStream = urlConnection.getInputStream();
+                _imageBitmap = BitmapFactory.decodeStream(inputStream);
+                inputStream.close();
             }
         } catch (Exception e) {
             Log.d("code", "catch url get: " + e.getMessage());

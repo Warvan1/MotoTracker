@@ -267,7 +267,7 @@ public class CarManagerFragment extends Fragment implements RecyclerViewInterfac
             openDeleteCarDialog(position, car_id);
         }
         else if(id == 1){
-            getNewCarImage(position, id);
+            getNewCarImage(position, car_id);
         }
     }
 
@@ -328,21 +328,23 @@ public class CarManagerFragment extends Fragment implements RecyclerViewInterfac
     public void getNewCarImage(int position, int car_id){
         _addMaintenanceDataJSON.put("fragmentName", "CarManager");
         _addMaintenanceDataJSON.put("task", "Take Photo");
+        _addMaintenanceDataJSON.put("position", position);
         _addMaintenanceDataJSON.put("car_id", car_id);
         CameraFragment fragment = CameraFragment.newInstance(_addMaintenanceDataJSON.toString());
         _fragmentSwitcher.switchFragment(fragment, getParentFragmentManager());
     }
 
     public void sendCarImageToServer(){
-//        Uri uri = Uri.parse(_addMaintenanceDataJSON.getString("photoURI"));
-
         JSONObjectWrapper query = new JSONObjectWrapper();
         query.put("car_id", _addMaintenanceDataJSON.getInt("car_id"));
 
         new HTTPRequest(getString(R.string.api_base_url) + "/uploadCarImage").setMethod("POST").setQueries(query)
                 .setContentType("image/jpeg").setPhotoURI(this.requireContext().getContentResolver(), _addMaintenanceDataJSON.getString("photoURI"))
                 .setAuthToken(_auth0.getAccessToken(), _userProfile.getString("userid")).setCallback(res -> {
-                    Log.d("response", "sendCarImageToServer: " + res);
+                    JSONObjectWrapper resJSON = new JSONObjectWrapper(res);
+                    if(resJSON.getString("message").equals("file uploaded successfully.")){
+                        _adapter.notifyItemChanged(_addMaintenanceDataJSON.getInt("position"));
+                    }
                 }).runAsync();
     }
 
