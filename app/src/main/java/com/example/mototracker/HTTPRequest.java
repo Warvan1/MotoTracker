@@ -6,11 +6,14 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Handler;
 import android.os.Looper;
+import android.provider.MediaStore;
 import android.util.Log;
 
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -146,11 +149,15 @@ public class HTTPRequest{
                     writer.close();
                 }
                 else if(_contentType.equals("image/jpeg") && _photoURI != null){
+                    //read in the image URI as a bitmap and compress the JPEG to a ByteArray
+                    Bitmap photoBitmap = MediaStore.Images.Media.getBitmap(_contentResolver, _photoURI);
+                    ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+                    photoBitmap.compress(Bitmap.CompressFormat.JPEG, 30, byteArrayOutputStream);
+                    byte[] photoByteArray = byteArrayOutputStream.toByteArray();
+
+                    //create input and output streams and send from the input stream to the output stream
                     DataOutputStream outputStream = new DataOutputStream(urlConnection.getOutputStream());
-                    InputStream inputStream = _contentResolver.openInputStream(_photoURI);
-                    if(inputStream == null){
-                        throw new IOException("invalid file input stream");
-                    }
+                    InputStream inputStream = new ByteArrayInputStream(photoByteArray);
 
                     int bytesAvailable = inputStream.available();
                     int bufferSize = Math.min(bytesAvailable, 4096);
