@@ -80,7 +80,7 @@ public class MaintenanceLogRecyclerViewAdapter extends RecyclerView.Adapter<Main
                 itemView.setOnLongClickListener(v -> {
                     int position = getAdapterPosition();
                     if (position != RecyclerView.NO_POSITION){
-                        recyclerViewInterface.onItemLongClick(position);
+                        recyclerViewInterface.onItemLongClick(position, 0);
                     }
                     return true;
                 });

@@ -160,7 +160,7 @@ public class MaintenanceLogFragment extends Fragment implements RecyclerViewInte
     }
 
     @Override
-    public void onItemLongClick(int position) {
+    public void onItemLongClick(int position, int id) {
         if(!_currentCarJSON.getString("permissions").equals("Edit")){
             return;
         }

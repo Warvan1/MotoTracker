@@ -7,6 +7,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,6 +24,8 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import java.time.Year;
 
 public class CarManagerFragment extends Fragment implements RecyclerViewInterface {
+    private static final String ARG_METADATA_JSON = "metadataJSON";
+    private JSONObjectWrapper _addMaintenanceDataJSON = new JSONObjectWrapper();
     private Auth0Authentication _auth0;
     private JSONObjectWrapper _userProfile;
     private FragmentSwitcher _fragmentSwitcher;
@@ -34,9 +37,20 @@ public class CarManagerFragment extends Fragment implements RecyclerViewInterfac
         // Required empty public constructor
     }
 
+    public static CarManagerFragment newInstance(String metadataJSON){
+        CarManagerFragment fragment = new CarManagerFragment();
+        Bundle args = new Bundle();
+        args.putString(ARG_METADATA_JSON, metadataJSON);
+        fragment.setArguments(args);
+        return fragment;
+    }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if(getArguments() != null){
+            _addMaintenanceDataJSON = new JSONObjectWrapper(getArguments().getString(ARG_METADATA_JSON));
+        }
     }
 
     @Override
@@ -58,6 +72,18 @@ public class CarManagerFragment extends Fragment implements RecyclerViewInterfac
 
         //get our recyclerView for our adapter
         _recyclerView = view.findViewById(R.id.car_manager_recycler_view);
+
+        //handle uri input from camera fragment
+        String uriString = "";
+        try{
+            uriString = _addMaintenanceDataJSON.getString("photoURI");
+        }
+        catch(RuntimeException e){}
+
+        //if the uri input exists then we want to send the image to the server
+        if(!uriString.isEmpty()){
+            sendCarImageToServer();
+        }
 
         //retrieve all cars for the user
         new HTTPRequest(getString(R.string.api_base_url) + "/getcars")
@@ -235,9 +261,17 @@ public class CarManagerFragment extends Fragment implements RecyclerViewInterfac
     }
 
     @Override
-    public void onItemLongClick(int position) {
+    public void onItemLongClick(int position, int id) {
         int car_id = _carModels.getJSONObjectWrapper(position).getInt("car_id");
+        if(id == 0){
+            openDeleteCarDialog(position, car_id);
+        }
+        else if(id == 1){
+            getNewCarImage(position, id);
+        }
+    }
 
+    public void openDeleteCarDialog(int position, int car_id){
         if(_carModels.getJSONObjectWrapper(position).getString("user_id").equals(_userProfile.getString("userid"))) {
             //create and show the delete car popup window
             Dialog viewDeleteCarForm = new Dialog(this.requireContext());
@@ -288,8 +322,28 @@ public class CarManagerFragment extends Fragment implements RecyclerViewInterfac
                 _carModels.remove(position);
                 _adapter.notifyItemRemoved(position);
             });
-
         }
+    }
+
+    public void getNewCarImage(int position, int car_id){
+        _addMaintenanceDataJSON.put("fragmentName", "CarManager");
+        _addMaintenanceDataJSON.put("task", "Take Photo");
+        _addMaintenanceDataJSON.put("car_id", car_id);
+        CameraFragment fragment = CameraFragment.newInstance(_addMaintenanceDataJSON.toString());
+        _fragmentSwitcher.switchFragment(fragment, getParentFragmentManager());
+    }
+
+    public void sendCarImageToServer(){
+//        Uri uri = Uri.parse(_addMaintenanceDataJSON.getString("photoURI"));
+
+        JSONObjectWrapper query = new JSONObjectWrapper();
+        query.put("car_id", _addMaintenanceDataJSON.getInt("car_id"));
+
+        new HTTPRequest(getString(R.string.api_base_url) + "/uploadCarImage").setMethod("POST").setQueries(query)
+                .setContentType("image/jpeg").setPhotoURI(this.requireContext().getContentResolver(), _addMaintenanceDataJSON.getString("photoURI"))
+                .setAuthToken(_auth0.getAccessToken(), _userProfile.getString("userid")).setCallback(res -> {
+                    Log.d("response", "sendCarImageToServer: " + res);
+                }).runAsync();
     }
 
     public void highlightCurrentCar(int currentCar){

@@ -43,6 +43,17 @@
                 app:layout_constraintStart_toEndOf="@id/car_manager_row_name"
                 app:layout_constraintTop_toTopOf="@id/car_manager_row_name" />
 
+            <ImageView
+                android:id="@+id/car_manager_row_image"
+                android:layout_width="100dp"
+                android:layout_height="0dp"
+                android:backgroundTint="@color/md_theme_primaryContainer"
+                app:tint="@color/md_theme_onPrimaryContainer"
+                android:src="@drawable/baseline_directions_car_24"
+                app:layout_constraintStart_toStartOf="@id/car_manager_row_name"
+                app:layout_constraintTop_toBottomOf="@+id/car_manager_row_name"
+                app:layout_constraintBottom_toBottomOf="@id/car_manager_row_miles"/>
+
             <TextView
                 android:id="@+id/car_manager_row_year"
                 android:layout_width="wrap_content"
@@ -52,7 +63,7 @@
                 android:paddingTop="16dp"
                 android:paddingStart="16dp"
                 android:paddingEnd="16dp"
-                app:layout_constraintStart_toStartOf="@id/car_manager_row_name"
+                app:layout_constraintStart_toEndOf="@id/car_manager_row_image"
                 app:layout_constraintTop_toBottomOf="@id/car_manager_row_name" />
 
             <TextView

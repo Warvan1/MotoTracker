@@ -263,6 +263,9 @@ public class CameraFragment extends Fragment {
         if(parentFragmentName.equals("Dashboard")){
             _fragmentSwitcher.switchFragment(DashboardFragment.newInstance(_addMaintenanceDataJSON.toString()), getParentFragmentManager());
         }
+        if(parentFragmentName.equals("CarManager")){
+            _fragmentSwitcher.switchFragment(CarManagerFragment.newInstance(_addMaintenanceDataJSON.toString()), getParentFragmentManager());
+        }
     }
 
 

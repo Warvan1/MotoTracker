@@ -5,13 +5,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
-
-import java.util.Objects;
 
 public class CarManagerRecyclerViewAdapter extends RecyclerView.Adapter<CarManagerRecyclerViewAdapter.MyViewHolder> {
     private final RecyclerViewInterface _CarManager_recyclerViewInterface;
@@ -67,6 +66,7 @@ public class CarManagerRecyclerViewAdapter extends RecyclerView.Adapter<CarManag
         else{
             holder._shareButtonView.setVisibility(View.GONE);
         }
+        //TODO: Get Image for the view here
     }
 
     @Override
@@ -85,6 +85,7 @@ public class CarManagerRecyclerViewAdapter extends RecyclerView.Adapter<CarManag
         public TextView _selectedView;
         public Button _shareButtonView;
         public CardView _cardView;
+        public ImageView _carImageView;
 
         public MyViewHolder(@NonNull View itemView, RecyclerViewInterface recyclerViewInterface){
             super(itemView);
@@ -96,6 +97,7 @@ public class CarManagerRecyclerViewAdapter extends RecyclerView.Adapter<CarManag
             _selectedView = itemView.findViewById(R.id.car_manager_row_selected);
             _shareButtonView = itemView.findViewById(R.id.car_manager_share_button);
             _cardView = itemView.findViewById(R.id.car_manager_row_card);
+            _carImageView = itemView.findViewById(R.id.car_manager_row_image);
 
             if(recyclerViewInterface != null){
                 itemView.setOnClickListener(v -> {
@@ -117,7 +119,16 @@ public class CarManagerRecyclerViewAdapter extends RecyclerView.Adapter<CarManag
                 itemView.setOnLongClickListener(v -> {
                     int position = getAdapterPosition();
                     if(position != RecyclerView.NO_POSITION){
-                        recyclerViewInterface.onItemLongClick(position);
+                        recyclerViewInterface.onItemLongClick(position, 0);
+                    }
+                    return true;
+                });
+
+                //image on long click handler
+                itemView.setOnLongClickListener(v -> {
+                    int position = getAdapterPosition();
+                    if(position != RecyclerView.NO_POSITION){
+                        recyclerViewInterface.onItemLongClick(position, 1);
                     }
                     return true;
                 });
