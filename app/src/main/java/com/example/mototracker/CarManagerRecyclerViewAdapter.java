@@ -136,7 +136,7 @@ public class CarManagerRecyclerViewAdapter extends RecyclerView.Adapter<CarManag
                 });
 
                 //image on long click handler
-                itemView.setOnLongClickListener(v -> {
+                _carImageView.setOnLongClickListener(v -> {
                     int position = getAdapterPosition();
                     if(position != RecyclerView.NO_POSITION){
                         recyclerViewInterface.onItemLongClick(position, 1);
