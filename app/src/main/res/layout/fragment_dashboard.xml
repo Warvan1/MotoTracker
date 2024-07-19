@@ -175,6 +175,16 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
+                <ImageView
+                    android:id="@+id/dashboard_fuel_image"
+                    android:layout_width="100dp"
+                    android:layout_height="0dp"
+                    android:layout_marginStart="16dp"
+                    android:src="@drawable/baseline_local_gas_station_24"
+                    app:layout_constraintStart_toStartOf="@id/dashboard_fuel_title"
+                    app:layout_constraintTop_toBottomOf="@+id/dashboard_fuel_title"
+                    app:layout_constraintBottom_toBottomOf="@id/dashboard_fuel_dpm"/>
+
                 <TextView
                     android:id="@+id/dashboard_fuel_mpg"
                     android:layout_width="wrap_content"
@@ -184,7 +194,7 @@
                     android:paddingTop="16dp"
                     android:paddingStart="16dp"
                     android:paddingEnd="16dp"
-                    app:layout_constraintStart_toStartOf="@id/dashboard_fuel_title"
+                    app:layout_constraintStart_toEndOf="@id/dashboard_fuel_image"
                     app:layout_constraintTop_toBottomOf="@id/dashboard_fuel_title" />
 
                 <TextView
@@ -237,6 +247,16 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
+                <ImageView
+                    android:id="@+id/dashboard_oil_change_image"
+                    android:layout_width="100dp"
+                    android:layout_height="0dp"
+                    android:layout_marginStart="16dp"
+                    android:src="@drawable/oil_can_solid_svgrepo_com"
+                    app:layout_constraintStart_toStartOf="@id/dashboard_oil_change_title"
+                    app:layout_constraintTop_toBottomOf="@+id/dashboard_oil_change_title"
+                    app:layout_constraintBottom_toBottomOf="@id/dashboard_oil_change_miles"/>
+
                 <TextView
                     android:id="@+id/dashboard_oil_change_time"
                     android:layout_width="wrap_content"
@@ -246,7 +266,7 @@
                     android:paddingTop="16dp"
                     android:paddingStart="16dp"
                     android:paddingEnd="16dp"
-                    app:layout_constraintStart_toStartOf="@id/dashboard_oil_change_title"
+                    app:layout_constraintStart_toEndOf="@id/dashboard_oil_change_image"
                     app:layout_constraintTop_toBottomOf="@id/dashboard_oil_change_title" />
 
                 <TextView
@@ -287,6 +307,16 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
+                <ImageView
+                    android:id="@+id/dashboard_tire_rotation_image"
+                    android:layout_width="100dp"
+                    android:layout_height="0dp"
+                    android:layout_marginStart="16dp"
+                    android:src="@drawable/free_tire_svgrepo_com"
+                    app:layout_constraintStart_toStartOf="@id/dashboard_tire_rotation_title"
+                    app:layout_constraintTop_toBottomOf="@+id/dashboard_tire_rotation_title"
+                    app:layout_constraintBottom_toBottomOf="@id/dashboard_tire_rotation_miles"/>
+
                 <TextView
                     android:id="@+id/dashboard_tire_rotation_time"
                     android:layout_width="wrap_content"
@@ -296,7 +326,7 @@
                     android:paddingTop="16dp"
                     android:paddingStart="16dp"
                     android:paddingEnd="16dp"
-                    app:layout_constraintStart_toStartOf="@id/dashboard_tire_rotation_title"
+                    app:layout_constraintStart_toEndOf="@id/dashboard_tire_rotation_image"
                     app:layout_constraintTop_toBottomOf="@id/dashboard_tire_rotation_title" />
 
                 <TextView
@@ -337,6 +367,16 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
+                <ImageView
+                    android:id="@+id/dashboard_air_filter_image"
+                    android:layout_width="100dp"
+                    android:layout_height="0dp"
+                    android:layout_marginStart="16dp"
+                    android:src="@drawable/car_engine_filter_svgrepo_com"
+                    app:layout_constraintStart_toStartOf="@id/dashboard_air_filter_title"
+                    app:layout_constraintTop_toBottomOf="@+id/dashboard_air_filter_title"
+                    app:layout_constraintBottom_toBottomOf="@id/dashboard_air_filter_miles"/>
+
                 <TextView
                     android:id="@+id/dashboard_air_filter_time"
                     android:layout_width="wrap_content"
@@ -346,7 +386,7 @@
                     android:paddingTop="16dp"
                     android:paddingStart="16dp"
                     android:paddingEnd="16dp"
-                    app:layout_constraintStart_toStartOf="@id/dashboard_air_filter_title"
+                    app:layout_constraintStart_toEndOf="@id/dashboard_air_filter_image"
                     app:layout_constraintTop_toBottomOf="@id/dashboard_air_filter_title" />
 
                 <TextView

@@ -9,6 +9,7 @@ import android.widget.Toast;
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.content.res.AppCompatResources;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
@@ -100,9 +101,6 @@ public class MainActivity extends AppCompatActivity {
                     handleAuth();
                 });
             }
-            else if (menuID == R.id.settings) {
-                Log.d("code", "settings");
-            }
             else if (menuID == R.id.carManager) {
                 Log.d("code", "Car Manager");
                 if(_auth0.isAuthenticated()){
@@ -124,6 +122,7 @@ public class MainActivity extends AppCompatActivity {
             _userProfile = _auth0.getUserProfile();
             emailT.setText(_userProfile.getString("email"));
             menuItem.setTitle(R.string.logout);
+            menuItem.setIcon(getDrawable(R.drawable.baseline_logout_24));
             //make an adduser post request
             new HTTPRequest(getString(R.string.api_base_url) + "/adduser").setMethod("POST")
                     .setAuthToken(_auth0.getAccessToken()).setData(_userProfile).runAsync();
@@ -137,6 +136,7 @@ public class MainActivity extends AppCompatActivity {
             _userProfile = null;
             emailT.setText(R.string.emailPlaceholder);
             menuItem.setTitle(R.string.login);
+            menuItem.setIcon(getDrawable(R.drawable.baseline_login_24));
             //switch to the home fragment on logout if you are NOT on the home fragment
             Fragment currentFragment = getSupportFragmentManager().findFragmentById(R.id.flFragment);
             if(!(currentFragment instanceof HomeFragment)){

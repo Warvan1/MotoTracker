@@ -6,39 +6,32 @@
     <group android:checkableBehavior="single">
         <item
             android:id="@+id/home"
+            android:icon="@drawable/baseline_home_24"
             android:title="@string/home"/>
 
         <item
             android:id="@+id/dashboard"
+            android:icon="@drawable/baseline_av_timer_24"
             android:title="@string/dashboard"/>
 
         <item
             android:id="@+id/maintenanceLog"
+            android:icon="@drawable/baseline_menu_book_24"
             android:title="@string/maintenanceLog"/>
 
         <item
             android:id="@+id/statistics"
+            android:icon="@drawable/baseline_leaderboard_24"
             android:title="@string/statistics"/>
 
+        <item
+            android:id="@+id/carManager"
+            android:icon="@drawable/baseline_directions_car_24"
+            android:title="@string/carManager"/>
+
+        <item
+            android:id="@+id/login"
+            android:icon="@drawable/baseline_login_24"
+            android:title="@string/login"/>
     </group>
-
-    <item
-        android:id="@+id/accountProfile"
-        android:title="@string/accountProfile">
-
-        <menu>
-            <item
-                android:id="@+id/login"
-                android:title="@string/login"/>
-
-            <item
-                android:id="@+id/settings"
-                android:title="@string/settings"/>
-
-            <item
-                android:id="@+id/carManager"
-                android:title="@string/carManager"/>
-
-        </menu>
-    </item>
 </menu>
