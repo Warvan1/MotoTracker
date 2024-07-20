@@ -151,12 +151,12 @@ public class DashboardFragment extends Fragment {
                     handleEventTracking(_currentCarJSON, registrationCard, registrationTime, "registration_time");
                     
                     //open an add car dialog if we have parsed text input to the fragment
-                    String parsedText = "";
+                    boolean photoCallbackFlag = false;
                     try{
-                        parsedText = _addMaintenanceDataJSON.getString("parsedText");
+                        photoCallbackFlag = _addMaintenanceDataJSON.getBoolean("photoCallbackFlag");
                     }
                     catch (RuntimeException e){}
-                    if(!parsedText.isEmpty()){
+                    if(photoCallbackFlag){
                         //open the add maintenance dialog box
                         _addMaintenanceDataJSON.put("fragmentName", "Dashboard");
                         AddMaintenanceDialog.open(this.requireContext(), _fragmentSwitcher, getParentFragmentManager(), _currentCarJSON, _addMaintenanceDataJSON, callback -> {

@@ -120,12 +120,12 @@ public class MaintenanceLogFragment extends Fragment implements RecyclerViewInte
                     }
 
                     //open an add car dialog if we have parsed text input to the fragment
-                    String parsedText = "";
+                    boolean photoCallbackFlag = false;
                     try{
-                        parsedText = _addMaintenanceDataJSON.getString("parsedText");
+                        photoCallbackFlag = _addMaintenanceDataJSON.getBoolean("photoCallbackFlag");
                     }
                     catch (RuntimeException e){}
-                    if(!parsedText.isEmpty()){
+                    if(photoCallbackFlag){
                         //open the add maintenance dialog box
                         _addMaintenanceDataJSON.put("fragmentName", "MaintenanceLog");
                         AddMaintenanceDialog.open(this.requireContext(), _fragmentSwitcher, getParentFragmentManager(), _currentCarJSON, _addMaintenanceDataJSON, callback -> {

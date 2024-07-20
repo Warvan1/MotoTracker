@@ -48,6 +48,32 @@ public class AddMaintenanceDialog {
         }
         catch(RuntimeException e){}
 
+        String savedCost = "";
+        String savedGallons = "";
+        String savedMiles = "";
+        String savedNotes = "";
+        String savedType = "";
+        try{
+            savedCost = addMaintenanceDataJSON.getString("savedCost");
+        }
+        catch(RuntimeException e){}
+        try{
+            savedGallons = addMaintenanceDataJSON.getString("savedGallons");
+        }
+        catch(RuntimeException e){}
+        try{
+            savedMiles = addMaintenanceDataJSON.getString("savedMiles");
+        }
+        catch(RuntimeException e){}
+        try{
+            savedNotes = addMaintenanceDataJSON.getString("savedNotes");
+        }
+        catch(RuntimeException e){}
+        try{
+            savedType = addMaintenanceDataJSON.getString("savedType");
+        }
+        catch(RuntimeException e){}
+
         //create and show add maintenance popup window
         Dialog viewAddMaintenanceForm = new Dialog(context);
         viewAddMaintenanceForm.setContentView(R.layout.add_maintenance_form);
@@ -67,14 +93,29 @@ public class AddMaintenanceDialog {
         if(parsedCost != 0){
             cost.setText(String.valueOf(parsedCost));
         }
+        else if(!savedCost.isEmpty()){
+            cost.setText(savedCost);
+        }
         if(parsedGallons != 0){
             gallons.setText(String.valueOf(parsedGallons));
+        }
+        else if(!savedGallons.isEmpty()){
+            gallons.setText(savedGallons);
         }
         if(parsedOdometer > currentCarJSON.getInt("miles")){
             miles.setText(String.valueOf(parsedOdometer));
         }
+        else if(!savedMiles.isEmpty()){
+            miles.setText(savedMiles);
+        }
         else{
             miles.setText(currentCarJSON.getString("miles"));
+        }
+        if(!savedNotes.isEmpty()){
+            notes.setText(savedNotes);
+        }
+        if(!savedType.isEmpty()){
+            type[0] = savedType;
         }
 
         //setup add maintenance type dropdown menu
@@ -83,6 +124,10 @@ public class AddMaintenanceDialog {
                 R.array.service_types, android.R.layout.simple_spinner_item);
         type_adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         type_spinner.setAdapter(type_adapter);
+        int starting_position = getPositionOfItem(context, R.array.service_types, type[0]);
+        if(starting_position != -1){
+            type_spinner.setSelection(starting_position);
+        }
         //item selected listener for our dropdown menu
         type_spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -109,6 +154,9 @@ public class AddMaintenanceDialog {
 
             addMaintenanceDataJSON.put("task", "Parse Text");
             addMaintenanceDataJSON.put("taskIdentifier", "Gas Pump");
+            saveFormData(addMaintenanceDataJSON, cost.getText().toString(),
+                    gallons.getText().toString(), miles.getText().toString(), notes.getText().toString(), type[0]);
+
             CameraFragment fragment = CameraFragment.newInstance(addMaintenanceDataJSON.toString());
             fragmentSwitcher.switchFragment(fragment, fragmentManager);
         });
@@ -119,6 +167,9 @@ public class AddMaintenanceDialog {
 
             addMaintenanceDataJSON.put("task", "Parse Text");
             addMaintenanceDataJSON.put("taskIdentifier", "Odometer");
+            saveFormData(addMaintenanceDataJSON, cost.getText().toString(),
+                    gallons.getText().toString(), miles.getText().toString(), notes.getText().toString(), type[0]);
+
             CameraFragment fragment = CameraFragment.newInstance(addMaintenanceDataJSON.toString());
             fragmentSwitcher.switchFragment(fragment, fragmentManager);
         });
@@ -168,6 +219,34 @@ public class AddMaintenanceDialog {
                         .setData(addMaintenanceJSON).runAsync();
             }
         });
+    }
+
+    public static void saveFormData(JSONObjectWrapper addMaintenanceDataJSON, String savedCost, String savedGallons, String savedMiles, String savedNotes, String savedType){
+        if(!savedCost.isEmpty()){
+            addMaintenanceDataJSON.put("savedCost", savedCost);
+        }
+        if(!savedGallons.isEmpty()){
+            addMaintenanceDataJSON.put("savedGallons", savedGallons);
+        }
+        if(!savedMiles.isEmpty()){
+            addMaintenanceDataJSON.put("savedMiles", savedMiles);
+        }
+        if(!savedNotes.isEmpty()){
+            addMaintenanceDataJSON.put("savedNotes", savedNotes);
+        }
+        if(!savedType.isEmpty()){
+            addMaintenanceDataJSON.put("savedType", savedType);
+        }
+    }
+
+    public static int getPositionOfItem(Context context, int arrayResourceId, String itemToFind){
+        String[] array = context.getResources().getStringArray(arrayResourceId);
+        for(int i = 0; i < array.length; i++){
+            if(array[i].equals(itemToFind)){
+                return i;
+            }
+        }
+        return -1;
     }
 
     public static String parseCameraOutput(String addMaintenanceDataJSONString){

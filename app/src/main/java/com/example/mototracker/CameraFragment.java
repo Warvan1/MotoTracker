@@ -222,6 +222,7 @@ public class CameraFragment extends Fragment {
                         Uri uri = outputFileResults.getSavedUri();
                         if(uri != null){
                             _addMaintenanceDataJSON.put("photoURI", uri.toString());
+                            _addMaintenanceDataJSON.put("photoCallbackFlag", true);
                         }
                         parentFragmentSwitcher();
                     }
@@ -247,6 +248,7 @@ public class CameraFragment extends Fragment {
                 recognizer.process(inputImage).addOnSuccessListener(text -> {
                     String result = text.getText();
                     _addMaintenanceDataJSON.put("parsedText", result);
+                    _addMaintenanceDataJSON.put("photoCallbackFlag", true);
                     parentFragmentSwitcher();
                 });
 
