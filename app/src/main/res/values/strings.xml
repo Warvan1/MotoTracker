@@ -79,4 +79,5 @@
     <string name="removeMyAccess">Remove My Access</string>
     <string name="graphs">Graphs</string>
     <string name="gasPump">Gas Pump</string>
+    <string name="HomeFragmentParagraph">Temp Home Fragment Paragraph</string>
 </resources>

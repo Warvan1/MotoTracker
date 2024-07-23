@@ -17,7 +17,7 @@ import androidx.fragment.app.Fragment;
 
 import com.google.android.material.navigation.NavigationView;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements HomeFragment.OnFragmentInteractionListener {
     private DrawerLayout _drawerLayout;
     private Toolbar _toolbar;
     private NavigationView _navigationView;
@@ -139,9 +139,14 @@ public class MainActivity extends AppCompatActivity {
             menuItem.setIcon(getDrawable(R.drawable.baseline_login_24));
             //switch to the home fragment on logout if you are NOT on the home fragment
             Fragment currentFragment = getSupportFragmentManager().findFragmentById(R.id.flFragment);
-            if(!(currentFragment instanceof HomeFragment)){
-                _fragmentSwitcher.switchFragment(new HomeFragment(), getSupportFragmentManager());
-            }
+            _fragmentSwitcher.switchFragment(new HomeFragment(), getSupportFragmentManager());
         }
+    }
+
+    @Override
+    public void onHomeHandleAuth() {
+        _auth0.handleLoginOrLogout(v -> {
+            handleAuth();
+        });
     }
 }
