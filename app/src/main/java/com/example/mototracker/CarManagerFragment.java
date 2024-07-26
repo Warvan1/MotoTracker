@@ -164,7 +164,6 @@ public class CarManagerFragment extends Fragment implements RecyclerViewInterfac
                 addCarJSON.put("make", make.getText().toString());
                 addCarJSON.put("model", model.getText().toString());
                 addCarJSON.put("miles", Integer.parseInt(miles.getText().toString()));
-                addCarJSON.put("picture", "");
 
                 //send new car object to the server
                 new HTTPRequest(getString(R.string.api_base_url) + "/addcar").setMethod("POST")
