@@ -200,65 +200,14 @@ public class CarManagerFragment extends Fragment implements RecyclerViewInterfac
         }
         //share button on click handler
         else if(id == 1){
-            //create and show add maintenance popup window
-            Dialog viewShareCarForm = new Dialog(this.requireContext());
-            viewShareCarForm.setContentView(R.layout.share_car_form);
-            viewShareCarForm.show();
-
-            //access form data
-            EditText email = viewShareCarForm.findViewById(R.id.share_car_email);
-            TextView error_message = viewShareCarForm.findViewById(R.id.share_car_error_message);
-            final String[] permissions = {"View"};
-
-            //setup permissions dropdown menu
-            Spinner permission_spinner = viewShareCarForm.findViewById(R.id.share_car_permissions_spinner);
-            ArrayAdapter<CharSequence> type_adapter = ArrayAdapter.createFromResource(this.requireContext(),
-                    R.array.share_permissions, android.R.layout.simple_spinner_item);
-            type_adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-            permission_spinner.setAdapter(type_adapter);
-            //item selected listener for the permissions dropdown menu
-            permission_spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-                @Override
-                public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                    permissions[0] = parent.getItemAtPosition(position).toString();
-                }
-                @Override
-                public void onNothingSelected(AdapterView<?> parent) {}
-            });
-
-            Button shareCarSubmitButton = viewShareCarForm.findViewById(R.id.share_car_submit_button);
-            shareCarSubmitButton.setOnClickListener(v -> {
-                //handle input validation
-                if(verifyStringLength(error_message, email.getText().toString(), 50, "Email")){
-                    return;
-                }
-
-                //retrieve the form data into json object
-                JSONObjectWrapper shareCarJSON = new JSONObjectWrapper();
-                shareCarJSON.put("email", email.getText().toString());
-                shareCarJSON.put("permissions", permissions[0]);
-
-                JSONObjectWrapper query = new JSONObjectWrapper();
-                query.put("car_id", car_id);
-
-                new HTTPRequest(getString(R.string.api_base_url) + "/sharecar").setMethod("POST").setQueries(query)
-                        .setAuthToken(_auth0.getAccessToken(), _userProfile.getString("userid"))
-                        .setData(shareCarJSON).setCallback(res -> {
-                            JSONObjectWrapper resJSON = new JSONObjectWrapper(res);
-                            boolean success = resJSON.getBoolean("success");
-                            if(success){
-                                //close the form
-                                viewShareCarForm.dismiss();
-                            }
-                            else{
-                                error_message.setText(getString(R.string.noEmailAccount));
-                                error_message.setVisibility(View.VISIBLE);
-                            }
-                        }).runAsync();
-            });
+            openShareCarDialog(car_id);
+        }
+        //edit button on click handler
+        else if(id == 2){
+            editCarDialog(_carModels.getJSONObjectWrapper(position));
         }
         //delete button onclick handler
-        else if(id == 2){
+        else if(id == 3){
             openDeleteCarDialog(position, car_id);
         }
     }
@@ -270,6 +219,76 @@ public class CarManagerFragment extends Fragment implements RecyclerViewInterfac
         if(id == 1){
             getNewCarImage(position, car_id);
         }
+    }
+
+    public void editCarDialog(JSONObjectWrapper car){
+        //TODO add edit car dialog here similar to add car
+    }
+
+    public void openShareCarDialog(int car_id){
+        //create and show share car popup window
+        Dialog viewShareCarForm = new Dialog(this.requireContext());
+        viewShareCarForm.setContentView(R.layout.share_car_form);
+        viewShareCarForm.show();
+
+        //access form data
+        EditText email = viewShareCarForm.findViewById(R.id.share_car_email);
+        TextView error_message = viewShareCarForm.findViewById(R.id.share_car_error_message);
+        final String[] permissions = {"View"};
+
+        //setup permissions dropdown menu
+        Spinner permission_spinner = viewShareCarForm.findViewById(R.id.share_car_permissions_spinner);
+        ArrayAdapter<CharSequence> type_adapter = ArrayAdapter.createFromResource(this.requireContext(),
+                R.array.share_permissions, android.R.layout.simple_spinner_item);
+        type_adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        permission_spinner.setAdapter(type_adapter);
+        //item selected listener for the permissions dropdown menu
+        permission_spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                permissions[0] = parent.getItemAtPosition(position).toString();
+            }
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {}
+        });
+
+        Button shareCarSubmitButton = viewShareCarForm.findViewById(R.id.share_car_submit_button);
+        shareCarSubmitButton.setOnClickListener(v -> {
+            //handle input validation
+            if(verifyStringLength(error_message, email.getText().toString(), 50, "Email")){
+                return;
+            }
+
+            //retrieve the form data into json object
+            JSONObjectWrapper shareCarJSON = new JSONObjectWrapper();
+            shareCarJSON.put("email", email.getText().toString());
+            shareCarJSON.put("permissions", permissions[0]);
+
+            JSONObjectWrapper query = new JSONObjectWrapper();
+            query.put("car_id", car_id);
+
+            new HTTPRequest(getString(R.string.api_base_url) + "/sharecar").setMethod("POST").setQueries(query)
+                    .setAuthToken(_auth0.getAccessToken(), _userProfile.getString("userid"))
+                    .setData(shareCarJSON).setCallback(res -> {
+                        JSONObjectWrapper resJSON = new JSONObjectWrapper(res);
+                        boolean success = resJSON.getBoolean("success");
+                        if(success){
+                            //close the form
+                            error_message.setText(getString(R.string.successShareCar));
+                            error_message.setVisibility(View.VISIBLE);
+//                            viewShareCarForm.dismiss();
+                        }
+                        else{
+                            error_message.setText(getString(R.string.noEmailAccount));
+                            error_message.setVisibility(View.VISIBLE);
+                        }
+                    }).runAsync();
+        });
+
+        Button closeShareDialogButton = viewShareCarForm.findViewById(R.id.share_car_close_button);
+        closeShareDialogButton.setOnClickListener(v -> {
+            viewShareCarForm.dismiss();
+        });
     }
 
     public void openDeleteCarDialog(int position, int car_id){

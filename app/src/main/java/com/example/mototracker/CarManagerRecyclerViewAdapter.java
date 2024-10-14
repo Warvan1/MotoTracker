@@ -97,6 +97,7 @@ public class CarManagerRecyclerViewAdapter extends RecyclerView.Adapter<CarManag
         public TextView _milesView;
         public TextView _selectedView;
         public Button _shareButtonView;
+        public Button _editButtonView;
         public Button _deleteButtonView;
         public CardView _cardView;
         public ImageView _carImageView;
@@ -110,6 +111,7 @@ public class CarManagerRecyclerViewAdapter extends RecyclerView.Adapter<CarManag
             _milesView = itemView.findViewById(R.id.car_manager_row_miles);
             _selectedView = itemView.findViewById(R.id.car_manager_row_selected);
             _shareButtonView = itemView.findViewById(R.id.car_manager_share_button);
+            _editButtonView = itemView.findViewById(R.id.car_manager_edit_button);
             _deleteButtonView = itemView.findViewById(R.id.car_manager_delete_button);
             _cardView = itemView.findViewById(R.id.car_manager_row_card);
             _carImageView = itemView.findViewById(R.id.car_manager_row_image);
@@ -130,11 +132,19 @@ public class CarManagerRecyclerViewAdapter extends RecyclerView.Adapter<CarManag
                     }
                 });
 
+                //edit button on click handler
+                _editButtonView.setOnClickListener(v -> {
+                    int position = getAdapterPosition();
+                    if(position != RecyclerView.NO_POSITION){
+                        recyclerViewInterface.onItemClick(position, 2);
+                    }
+                });
+
                 //delete button on click handler
                 _deleteButtonView.setOnClickListener(v -> {
                     int position = getAdapterPosition();
                     if(position != RecyclerView.NO_POSITION){
-                        recyclerViewInterface.onItemClick(position, 2);
+                        recyclerViewInterface.onItemClick(position, 3);
                     }
                 });
 
