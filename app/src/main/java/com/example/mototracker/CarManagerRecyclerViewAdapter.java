@@ -68,6 +68,13 @@ public class CarManagerRecyclerViewAdapter extends RecyclerView.Adapter<CarManag
             //modify the delete button text to say remove
             holder._deleteButtonView.setText(R.string.remove);
         }
+        //handle showing the edit button if you have edit permissions
+        if(_carModels.getJSONObjectWrapper(position).getString("permissions").equals("Edit")){
+            holder._editButtonView.setVisibility(View.VISIBLE);
+        }
+        else{
+            holder._editButtonView.setVisibility(View.GONE);
+        }
 
         //get the car image with the car_id
         JSONObjectWrapper query = new JSONObjectWrapper();

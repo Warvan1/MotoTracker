@@ -66,6 +66,87 @@ public class JSONArrayWrapper {
     public void put(JSONArrayWrapper value){
         _jsonArray.put(value.getJSONArray());
     }
+    public void put(int index, String value){
+        try{
+            _jsonArray.put(index, value);
+        }
+        catch (JSONException e){
+            Log.d("JsonWrapper", "error: " + e.getMessage());
+            throw new RuntimeException(e);
+        }
+    }
+    public void put(int index, int value){
+        try{
+            _jsonArray.put(index, value);
+        }
+        catch (JSONException e){
+            Log.d("JsonWrapper", "error: " + e.getMessage());
+            throw new RuntimeException(e);
+        }
+    }
+    public void put(int index, long value){
+        try{
+            _jsonArray.put(index, value);
+        }
+        catch (JSONException e){
+            Log.d("JsonWrapper", "error: " + e.getMessage());
+            throw new RuntimeException(e);
+        }
+    }
+    public void put(int index, double value){
+        try{
+            _jsonArray.put(index, value);
+        }
+        catch (JSONException e){
+            Log.d("JsonWrapper", "error: " + e.getMessage());
+            throw new RuntimeException(e);
+        }
+    }
+    public void put(int index, boolean value){
+        try{
+            _jsonArray.put(index, value);
+        }
+        catch (JSONException e){
+            Log.d("JsonWrapper", "error: " + e.getMessage());
+            throw new RuntimeException(e);
+        }
+    }
+    public void put(int index, JSONObject value){
+        try{
+            _jsonArray.put(index, value);
+        }
+        catch (JSONException e){
+            Log.d("JsonWrapper", "error: " + e.getMessage());
+            throw new RuntimeException(e);
+        }
+    }
+    public void put(int index, JSONArray value){
+        try{
+            _jsonArray.put(index, value);
+        }
+        catch (JSONException e){
+            Log.d("JsonWrapper", "error: " + e.getMessage());
+            throw new RuntimeException(e);
+        }
+    }
+    public void put(int index, JSONObjectWrapper value){
+        try{
+            _jsonArray.put(index, value.getJSONObject());
+        }
+        catch (JSONException e){
+            Log.d("JsonWrapper", "error: " + e.getMessage());
+            throw new RuntimeException(e);
+        }
+    }
+    public void put(int index, JSONArrayWrapper value){
+        try{
+            _jsonArray.put(index, value.getJSONArray());
+        }
+        catch (JSONException e){
+            Log.d("JsonWrapper", "error: " + e.getMessage());
+            throw new RuntimeException(e);
+        }
+    }
     public String getString(int index){
         try{
             return _jsonArray.getString(index);

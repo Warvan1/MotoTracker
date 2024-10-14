@@ -204,7 +204,7 @@ public class CarManagerFragment extends Fragment implements RecyclerViewInterfac
         }
         //edit button on click handler
         else if(id == 2){
-            editCarDialog(_carModels.getJSONObjectWrapper(position));
+            editCarDialog(position, _carModels.getJSONObjectWrapper(position));
         }
         //delete button onclick handler
         else if(id == 3){
@@ -221,8 +221,82 @@ public class CarManagerFragment extends Fragment implements RecyclerViewInterfac
         }
     }
 
-    public void editCarDialog(JSONObjectWrapper car){
-        //TODO add edit car dialog here similar to add car
+    public void editCarDialog(int position, JSONObjectWrapper car){
+        //create and show edit car popup window (same dialog as add car)
+        Dialog viewEditCarForm = new Dialog(this.requireContext());
+        viewEditCarForm.setContentView(R.layout.add_car_form);
+        viewEditCarForm.show();
+
+        //access form data
+        EditText name = viewEditCarForm.findViewById(R.id.add_car_name);
+        name.setText(car.getString("name"));
+        EditText year = viewEditCarForm.findViewById(R.id.add_car_year);
+        year.setText(car.getString("year"));
+        EditText make = viewEditCarForm.findViewById(R.id.add_car_make);
+        make.setText(car.getString("make"));
+        EditText model = viewEditCarForm.findViewById(R.id.add_car_model);
+        model.setText(car.getString("model"));
+        EditText miles = viewEditCarForm.findViewById(R.id.add_car_miles);
+        miles.setText(car.getString("miles"));
+        TextView error_message = viewEditCarForm.findViewById(R.id.add_car_error_message);
+        error_message.setVisibility(View.GONE);
+
+        //add car submit button onclick listener
+        Button editCarSubmitButton = viewEditCarForm.findViewById(R.id.add_car_submit_btn);
+        editCarSubmitButton.setText(R.string.edit);
+        editCarSubmitButton.setOnClickListener(v2 -> {
+            boolean changes = false;
+            //retrieve the form data into a json object
+            JSONObjectWrapper editCarJSON = new JSONObjectWrapper();
+            if(!car.getString("name").equals(name.getText().toString())){
+                editCarJSON.put("name", name.getText().toString());
+                changes = true;
+            }
+            if(!(car.getInt("year") == Integer.parseInt(year.getText().toString()))){
+                editCarJSON.put("year", Integer.parseInt(year.getText().toString()));
+                changes = true;
+            }
+            if(!car.getString("make").equals(make.getText().toString())){
+                editCarJSON.put("make", make.getText().toString());
+                changes = true;
+            }
+            if(!car.getString("model").equals(model.getText().toString())){
+                editCarJSON.put("model", model.getText().toString());
+                changes = true;
+            }
+            if(!(car.getInt("miles") == Integer.parseInt(miles.getText().toString()))){
+                editCarJSON.put("miles", Integer.parseInt(miles.getText().toString()));
+                changes = true;
+            }
+
+            //close the form
+            viewEditCarForm.dismiss();
+
+            //only send an editcar request if there are changes
+            if(!changes){
+                return;
+            }
+
+            JSONObjectWrapper query = new JSONObjectWrapper();
+            query.put("car_id", car.getInt("car_id"));
+
+            new HTTPRequest(getString(R.string.api_base_url) + "/editcar").setMethod("POST").setQueries(query)
+                    .setAuthToken(_auth0.getAccessToken(), _userProfile.getString("userid"))
+                    .setData(editCarJSON).setCallback(res -> {
+                        if(res.equals("null")){
+                            return;
+                        }
+
+                        //copy over permissions and current_car from old car object to new object
+                        JSONObjectWrapper resJSON = new JSONObjectWrapper(res);
+                        resJSON.put("permissions", car.getString("permissions"));
+                        resJSON.put("current_car", car.getBoolean("current_car"));
+
+                        //replace the car object with our new object and update our recycler view
+                        _carModels.put(position, resJSON);
+                        _adapter.notifyItemChanged(position);
+                    }).runAsync();
+        });
     }
 
     public void openShareCarDialog(int car_id){
