@@ -257,15 +257,17 @@ public class CarManagerFragment extends Fragment implements RecyclerViewInterfac
                         }).runAsync();
             });
         }
+        //delete button onclick handler
+        else if(id == 2){
+            openDeleteCarDialog(position, car_id);
+        }
     }
 
     @Override
     public void onItemLongClick(int position, int id) {
         int car_id = _carModels.getJSONObjectWrapper(position).getInt("car_id");
-        if(id == 0){
-            openDeleteCarDialog(position, car_id);
-        }
-        else if(id == 1){
+        //image on long click handler
+        if(id == 1){
             getNewCarImage(position, car_id);
         }
     }

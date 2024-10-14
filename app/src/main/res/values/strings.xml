@@ -72,6 +72,8 @@
     <string name="timeSinceLastFormat">Time Since: %1$s</string>
     <string name="milesSinceLastFormat">Miles Since: %1$d</string>
     <string name="share">Share</string>
+    <string name="delete">Delete</string>
+    <string name="remove">Remove</string>
     <string name="email">Email</string>
     <string name="permissions">Permissions</string>
     <string name="noEmailAccount">There is no account attached to that email.</string>

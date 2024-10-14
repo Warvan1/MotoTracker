@@ -65,6 +65,8 @@ public class CarManagerRecyclerViewAdapter extends RecyclerView.Adapter<CarManag
         }
         else{
             holder._shareButtonView.setVisibility(View.GONE);
+            //modify the delete button text to say remove
+            holder._deleteButtonView.setText(R.string.remove);
         }
 
         //get the car image with the car_id
@@ -95,6 +97,7 @@ public class CarManagerRecyclerViewAdapter extends RecyclerView.Adapter<CarManag
         public TextView _milesView;
         public TextView _selectedView;
         public Button _shareButtonView;
+        public Button _deleteButtonView;
         public CardView _cardView;
         public ImageView _carImageView;
 
@@ -107,6 +110,7 @@ public class CarManagerRecyclerViewAdapter extends RecyclerView.Adapter<CarManag
             _milesView = itemView.findViewById(R.id.car_manager_row_miles);
             _selectedView = itemView.findViewById(R.id.car_manager_row_selected);
             _shareButtonView = itemView.findViewById(R.id.car_manager_share_button);
+            _deleteButtonView = itemView.findViewById(R.id.car_manager_delete_button);
             _cardView = itemView.findViewById(R.id.car_manager_row_card);
             _carImageView = itemView.findViewById(R.id.car_manager_row_image);
 
@@ -124,15 +128,14 @@ public class CarManagerRecyclerViewAdapter extends RecyclerView.Adapter<CarManag
                     if(position != RecyclerView.NO_POSITION){
                         recyclerViewInterface.onItemClick(position, 1);
                     }
-
                 });
 
-                itemView.setOnLongClickListener(v -> {
+                //delete button on click handler
+                _deleteButtonView.setOnClickListener(v -> {
                     int position = getAdapterPosition();
                     if(position != RecyclerView.NO_POSITION){
-                        recyclerViewInterface.onItemLongClick(position, 0);
+                        recyclerViewInterface.onItemClick(position, 2);
                     }
-                    return true;
                 });
 
                 //image on long click handler
