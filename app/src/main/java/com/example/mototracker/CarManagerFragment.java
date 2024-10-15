@@ -245,37 +245,24 @@ public class CarManagerFragment extends Fragment implements RecyclerViewInterfac
         Button editCarSubmitButton = viewEditCarForm.findViewById(R.id.add_car_submit_btn);
         editCarSubmitButton.setText(R.string.edit);
         editCarSubmitButton.setOnClickListener(v2 -> {
-            boolean changes = false;
-            //retrieve the form data into a json object
-            JSONObjectWrapper editCarJSON = new JSONObjectWrapper();
-            if(!car.getString("name").equals(name.getText().toString())){
-                editCarJSON.put("name", name.getText().toString());
-                changes = true;
-            }
-            if(!(car.getInt("year") == Integer.parseInt(year.getText().toString()))){
-                editCarJSON.put("year", Integer.parseInt(year.getText().toString()));
-                changes = true;
-            }
-            if(!car.getString("make").equals(make.getText().toString())){
-                editCarJSON.put("make", make.getText().toString());
-                changes = true;
-            }
-            if(!car.getString("model").equals(model.getText().toString())){
-                editCarJSON.put("model", model.getText().toString());
-                changes = true;
-            }
-            if(!(car.getInt("miles") == Integer.parseInt(miles.getText().toString()))){
-                editCarJSON.put("miles", Integer.parseInt(miles.getText().toString()));
-                changes = true;
-            }
-
             //close the form
             viewEditCarForm.dismiss();
-
             //only send an editcar request if there are changes
-            if(!changes){
+            if(!(!car.getString("name").equals(name.getText().toString()) ||
+                    car.getInt("year") != Integer.parseInt(year.getText().toString()) ||
+                    !car.getString("make").equals(make.getText().toString()) ||
+                    !car.getString("model").equals(model.getText().toString()) ||
+                    car.getInt("miles") != Integer.parseInt(miles.getText().toString()))){
                 return;
             }
+
+            //retrieve the form data into a json object
+            JSONObjectWrapper editCarJSON = new JSONObjectWrapper();
+            editCarJSON.put("name", name.getText().toString());
+            editCarJSON.put("year", Integer.parseInt(year.getText().toString()));
+            editCarJSON.put("make", make.getText().toString());
+            editCarJSON.put("model", model.getText().toString());
+            editCarJSON.put("miles", Integer.parseInt(miles.getText().toString()));
 
             JSONObjectWrapper query = new JSONObjectWrapper();
             query.put("car_id", car.getInt("car_id"));
