@@ -122,8 +122,8 @@ public class StatisticsFragment extends Fragment {
                     for(int i = 1; i < _maintenanceLogModels.length(); i++){
                         float miles = (float) _maintenanceLogModels.getJSONObjectWrapper(i).getInt("miles");
                         float milesNext = (float) _maintenanceLogModels.getJSONObjectWrapper(i-1).getInt("miles");
-                        float gallons = (float) _maintenanceLogModels.getJSONObjectWrapper(i).getInt("gallons");
-                        float cost = (float) _maintenanceLogModels.getJSONObjectWrapper(i).getInt("cost");
+                        float gallons = (float) _maintenanceLogModels.getJSONObjectWrapper(i).getDouble("gallons");
+                        float cost = (float) _maintenanceLogModels.getJSONObjectWrapper(i).getDouble("cost");
                         miles = miles - milesNext;
 
                         float value = 0;
