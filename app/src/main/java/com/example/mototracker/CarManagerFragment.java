@@ -174,6 +174,7 @@ public class CarManagerFragment extends Fragment implements RecyclerViewInterfac
                             //add car model from server to our recycler view
                             JSONObjectWrapper carModel = new JSONObjectWrapper(res);
                             carModel.put("current_car", true);
+                            carModel.put("permissions", "Edit");
                             _carModels.put(carModel);
                             _adapter.notifyItemInserted(_carModels.length());
                         }).runAsync();
