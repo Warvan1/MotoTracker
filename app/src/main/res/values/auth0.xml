@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="com_auth0_client_id">3Odrknk8BgW5rD7dkhQetU5ClsYBVLrZ</string>
+    <string name="com_auth0_domain">dev-ohd9-51j.us.auth0.com</string>
+    <string name="auth0_scheme">demo</string>
+<!--    <string name="api_audience">http://localhost:5000</string>-->
+<!--    <string name="api_base_url">http://10.0.2.2:5000/express</string>-->
+    <string name="api_audience">https://mototracker.xyz</string>
+    <string name="api_base_url">https://mototracker.xyz/express</string>
+</resources>
