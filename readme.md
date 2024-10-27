@@ -1,12 +1,10 @@
 # MotoTracker
-MotoTracker is a Java Android App made with Android Studio
+MotoTracker is a Java Android App used to manage car maintenance and track fuel costs and efficiency.
 
 ## Quick Start
-Currently there is no way to use the app except by cloning the repository and then downloading it on your phone using android studio.
-Eventually I will try and add the app to F-Droid or Google Play Store.
-
-## Usage
-To use the app you need to make an account and then head to the car manager to add your first car.
+To use the app you will need to deploy it from scratch using android studio and developer mode on your phone.
+After you install the app you will need to make an account or use the guest account,
+Guest@mototracker.xyz Password: Guest1!!
 
 ### Dashboard
 The Dashboard displays basic information about the selected car including,
@@ -41,4 +39,4 @@ The Car Manager is used to,
 * For User Accounts Im using the third party service Auth0 as its a secure method for managing user accounts.
 * To make the Charts on the Statistics page im using the gradle package "com.github.PhilJay:MPAndroidChart:v3.1.0"
 * For the Text recognition for the gas pump and odomiter photo parsing im using the gradle package "com.google.mlkit:text-recognition:16.0.0"
-* For the backend It uses an Express.JS Api I wrote In Javascript [GitHub](https://github.com/Warvan1/MotoTrackerAPI)
+* For the backend It uses an Express.JS Api I wrote In Typescript [GitHub](https://github.com/Warvan1/MotoTrackeaTypescriptAPI)
