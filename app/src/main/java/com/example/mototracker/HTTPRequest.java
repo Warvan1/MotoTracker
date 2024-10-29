@@ -108,8 +108,7 @@ public class HTTPRequest{
                 int status = executeHttpRequest();
 
                 //if the status is bad we need to switch to a Failed Connection Fragment
-                if(status != 0){
-                    Log.d("code", "run: status");
+                if(status == 2){
                     new Handler(Looper.getMainLooper()).post(() -> {
                         //access the fragment switcher object
                         FragmentSwitcher fragmentSwitcher = FragmentSwitcher.getInstance();
@@ -196,7 +195,7 @@ public class HTTPRequest{
 
             int code = urlConnection.getResponseCode();
             if (code != HttpURLConnection.HTTP_OK) {
-                throw new IOException("Invalid response from server: " + code);
+                return 1;
             }
 
             if(_imageCallback == null){
@@ -213,9 +212,7 @@ public class HTTPRequest{
             }
         } catch (Exception e) {
             Log.d("code", "catch url get: " + e.getMessage());
-            //respond with the error
-//            responseBuilder = new StringBuilder("catch url get: " + e.getMessage());
-            return 1;
+            return 2;
         } finally {
             if (urlConnection != null) {
                 urlConnection.disconnect();
