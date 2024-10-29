@@ -83,22 +83,10 @@
     <string name="removeMyAccess">Remove My Access</string>
     <string name="graphs">Graphs</string>
     <string name="gasPump">Gas Pump</string>
-    <string name="HomeFragmentParagraph">Dashboard\nDisplays basic information about the selected car including:\n
-* Car Info\n
-* Car Image\n
-* Fuel Stats\n
-* Time and Miles since for all the routine maintenance categories\n\nMaintenance Log\nUsed to manage all of the cars maintenance data and can be used to:\n
-* Add Maintenance of any of the following types, Fuel, Maintenance, Oil Change, Tire Rotation, Air Filter, Inspection, and Registration\n
-* View and Filter all the maintenance entries in each category\n
-* When adding maintenance you can use the phone camera to take a picture of the odometer on the car and the gas pump to fill in some of the form fields automatically\n
-* Delete Maintenance entry\'s with a long tap\n\nStatistics\nThe Statistics Page is used to view graphs related to fuel economy including:\n
-* Miles Per Gallon\n
-* Dollars Per Gallon\n
-* Dollars Per Mile\n\nCar Manager\nThe Car Manager is used to:\n
-* Add Cars\n
-* Add images to cars\n
-* Share cars with other users\n
-* Select which car you are currently using\n
-* Delete Cars with a long tap\n</string>
+    <string name="HomeFragmentParagraph">To get started create an account and login to use the website. (or use the guest account: guest@mototracker.xyz password: Guest1!!)\n\n
+        Dashboard\n\nThe Dashboard displays information about the selected car from the Car Manager. It also displays the most recent maintenance by category.\n\n
+        Maintenance Log\n\nThe Maintenance Log is used to add, view, and delete maintenance log entries for the selected car\n\n
+        Statistics\nThe Statistics page displays graphs for the selected car relating to fuel costs and efficiency.\n\n
+        Car Manager\n\nYou can use the Car Manager to add, edit, delete, and switch which car is active, for use in the Maintenance Log and Statistics pages.</string>
     <string name="failedConnection">Failed To Connect to Server</string>
 </resources>
