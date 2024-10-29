@@ -1,5 +1,6 @@
 package com.example.mototracker;
 
+import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.view.View;
@@ -207,14 +208,14 @@ public class AddMaintenanceDialog {
 
             //add a new maintenance item
             if(callback != null){
-                new HTTPRequest(context.getResources().getString(R.string.api_base_url) + "/addmaintenance").setQueries(query)
+                new HTTPRequest((Activity) context,context.getResources().getString(R.string.api_base_url) + "/addmaintenance").setQueries(query)
                         .setMethod("POST").setAuthToken(auth0.getAccessToken(), userProfile.getString("userid"))
                         .setData(addMaintenanceJSON).setCallback(res -> {
                             callback.accept("");
                         }).runAsync();
             }
             else{
-                new HTTPRequest(context.getResources().getString(R.string.api_base_url) + "/addmaintenance").setQueries(query)
+                new HTTPRequest((Activity) context,context.getResources().getString(R.string.api_base_url) + "/addmaintenance").setQueries(query)
                         .setMethod("POST").setAuthToken(auth0.getAccessToken(), userProfile.getString("userid"))
                         .setData(addMaintenanceJSON).runAsync();
             }

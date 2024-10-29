@@ -99,7 +99,7 @@ public class MaintenanceLogFragment extends Fragment implements RecyclerViewInte
         });
 
         //get the current car object
-        new HTTPRequest(getString(R.string.api_base_url) + "/getcurrentcar")
+        new HTTPRequest(getActivity(),getString(R.string.api_base_url) + "/getcurrentcar")
                 .setAuthToken(_auth0.getAccessToken(), _userProfile.getString("userid")).setCallback(res -> {
                     if(res.equals("null")){
                         return;
@@ -180,7 +180,7 @@ public class MaintenanceLogFragment extends Fragment implements RecyclerViewInte
             JSONObjectWrapper query = new JSONObjectWrapper();
             query.put("maintenance_id", maintenance_id);
 
-            new HTTPRequest(getString(R.string.api_base_url) + "/deletemaintenancelog").setQueries(query)
+            new HTTPRequest(getActivity(),getString(R.string.api_base_url) + "/deletemaintenancelog").setQueries(query)
                     .setAuthToken(_auth0.getAccessToken(), _userProfile.getString("userid")).setCallback(res -> {
                         getMaintenanceLogModelsFromAPI();
                     }).runAsync();
@@ -199,7 +199,7 @@ public class MaintenanceLogFragment extends Fragment implements RecyclerViewInte
             queries.put("page", _logPage);
         }
 
-        new HTTPRequest(getString(R.string.api_base_url) + "/getmaintenancelog").setQueries(queries)
+        new HTTPRequest(getActivity(),getString(R.string.api_base_url) + "/getmaintenancelog").setQueries(queries)
                 .setAuthToken(_auth0.getAccessToken(), _userProfile.getString("userid")).setCallback(res -> {
                     if(res.equals("null")){
                         return;
@@ -219,7 +219,7 @@ public class MaintenanceLogFragment extends Fragment implements RecyclerViewInte
                 }).runAsync();
 
         //update the current car object
-        new HTTPRequest(getString(R.string.api_base_url) + "/getcurrentcar")
+        new HTTPRequest(getActivity(),getString(R.string.api_base_url) + "/getcurrentcar")
                 .setAuthToken(_auth0.getAccessToken(), _userProfile.getString("userid")).setCallback(res -> {
                     if(res.equals("null")){
                         return;

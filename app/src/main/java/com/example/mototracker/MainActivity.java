@@ -124,7 +124,7 @@ public class MainActivity extends AppCompatActivity implements HomeFragment.OnFr
             menuItem.setTitle(R.string.logout);
             menuItem.setIcon(getDrawable(R.drawable.baseline_logout_24));
             //make an adduser post request
-            new HTTPRequest(getString(R.string.api_base_url) + "/adduser").setMethod("POST")
+            new HTTPRequest(this, getString(R.string.api_base_url) + "/adduser").setMethod("POST")
                     .setAuthToken(_auth0.getAccessToken()).setData(_userProfile).runAsync();
             //switch to the dashboard fragment on login if we are on the home fragment
             Fragment currentFragment = getSupportFragmentManager().findFragmentById(R.id.flFragment);

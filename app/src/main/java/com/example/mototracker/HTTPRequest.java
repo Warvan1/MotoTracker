@@ -1,5 +1,6 @@
 package com.example.mototracker;
 
+import android.app.Activity;
 import android.content.ContentResolver;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -8,6 +9,8 @@ import android.os.Handler;
 import android.os.Looper;
 import android.provider.MediaStore;
 import android.util.Log;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
@@ -27,6 +30,7 @@ import java.util.Iterator;
 import java.util.function.Consumer;
 
 public class HTTPRequest{
+    private final AppCompatActivity _activity;
     private String _url;
     private String _queries;
     private String _method;
@@ -40,7 +44,8 @@ public class HTTPRequest{
     private String _response;
     private Consumer<Bitmap> _imageCallback;
     private Bitmap _imageBitmap;
-    public HTTPRequest(String url){
+    public HTTPRequest(Activity activity, String url){
+        _activity = (AppCompatActivity) activity;
         _url = url;
         _method = "GET";
         _contentType = "application/json";
@@ -100,7 +105,18 @@ public class HTTPRequest{
         new Thread(new Runnable() {
             @Override
             public void run() {
-                executeHttpRequest();
+                int status = executeHttpRequest();
+
+                //if the status is bad we need to switch to a Failed Connection Fragment
+                if(status != 0){
+                    Log.d("code", "run: status");
+                    new Handler(Looper.getMainLooper()).post(() -> {
+                        //access the fragment switcher object
+                        FragmentSwitcher fragmentSwitcher = FragmentSwitcher.getInstance();
+                        fragmentSwitcher.switchFragment(new FailedConnectionFragment(), _activity.getSupportFragmentManager());
+                    });
+                    return;
+                }
 
                 //if there is a callback function
                 //create an os handler to get the looper for the main ui thread
@@ -115,7 +131,7 @@ public class HTTPRequest{
         }).start();
     }
 
-    private void executeHttpRequest() {
+    private int executeHttpRequest() {
         StringBuilder responseBuilder = new StringBuilder();
         HttpURLConnection urlConnection = null;
 
@@ -198,7 +214,8 @@ public class HTTPRequest{
         } catch (Exception e) {
             Log.d("code", "catch url get: " + e.getMessage());
             //respond with the error
-            responseBuilder = new StringBuilder("catch url get: " + e.getMessage());
+//            responseBuilder = new StringBuilder("catch url get: " + e.getMessage());
+            return 1;
         } finally {
             if (urlConnection != null) {
                 urlConnection.disconnect();
@@ -206,5 +223,6 @@ public class HTTPRequest{
         }
 
         _response = responseBuilder.toString();
+        return 0;
     }
 }

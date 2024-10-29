@@ -100,4 +100,5 @@
 * Share cars with other users\n
 * Select which car you are currently using\n
 * Delete Cars with a long tap\n</string>
+    <string name="failedConnection">Failed To Connect to Server</string>
 </resources>

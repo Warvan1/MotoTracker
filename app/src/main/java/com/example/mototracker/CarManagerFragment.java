@@ -86,7 +86,7 @@ public class CarManagerFragment extends Fragment implements RecyclerViewInterfac
         }
 
         //retrieve all cars for the user
-        new HTTPRequest(getString(R.string.api_base_url) + "/getcars")
+        new HTTPRequest(getActivity(),getString(R.string.api_base_url) + "/getcars")
                 .setAuthToken(_auth0.getAccessToken(), _userProfile.getString("userid"))
                 .setCallback(res -> {
                     JSONObjectWrapper resJson = new JSONObjectWrapper(res);
@@ -166,7 +166,7 @@ public class CarManagerFragment extends Fragment implements RecyclerViewInterfac
                 addCarJSON.put("miles", Integer.parseInt(miles.getText().toString()));
 
                 //send new car object to the server
-                new HTTPRequest(getString(R.string.api_base_url) + "/addcar").setMethod("POST")
+                new HTTPRequest(getActivity(),getString(R.string.api_base_url) + "/addcar").setMethod("POST")
                         .setAuthToken(_auth0.getAccessToken(), _userProfile.getString("userid"))
                         .setData(addCarJSON).setCallback(res -> {
                             //remove all current car highlights
@@ -196,7 +196,7 @@ public class CarManagerFragment extends Fragment implements RecyclerViewInterfac
             JSONObjectWrapper query = new JSONObjectWrapper();
             query.put("car_id", car_id);
 
-            new HTTPRequest(getString(R.string.api_base_url) + "/setcurrentcar").setQueries(query)
+            new HTTPRequest(getActivity(),getString(R.string.api_base_url) + "/setcurrentcar").setQueries(query)
                     .setAuthToken(_auth0.getAccessToken(), _userProfile.getString("userid")).runAsync();
         }
         //share button on click handler
@@ -268,7 +268,7 @@ public class CarManagerFragment extends Fragment implements RecyclerViewInterfac
             JSONObjectWrapper query = new JSONObjectWrapper();
             query.put("car_id", car.getInt("car_id"));
 
-            new HTTPRequest(getString(R.string.api_base_url) + "/editcar").setMethod("POST").setQueries(query)
+            new HTTPRequest(getActivity(),getString(R.string.api_base_url) + "/editcar").setMethod("POST").setQueries(query)
                     .setAuthToken(_auth0.getAccessToken(), _userProfile.getString("userid"))
                     .setData(editCarJSON).setCallback(res -> {
                         if(res.equals("null")){
@@ -329,7 +329,7 @@ public class CarManagerFragment extends Fragment implements RecyclerViewInterfac
             JSONObjectWrapper query = new JSONObjectWrapper();
             query.put("car_id", car_id);
 
-            new HTTPRequest(getString(R.string.api_base_url) + "/sharecar").setMethod("POST").setQueries(query)
+            new HTTPRequest(getActivity(),getString(R.string.api_base_url) + "/sharecar").setMethod("POST").setQueries(query)
                     .setAuthToken(_auth0.getAccessToken(), _userProfile.getString("userid"))
                     .setData(shareCarJSON).setCallback(res -> {
                         JSONObjectWrapper resJSON = new JSONObjectWrapper(res);
@@ -373,7 +373,7 @@ public class CarManagerFragment extends Fragment implements RecyclerViewInterfac
                     JSONObjectWrapper query = new JSONObjectWrapper();
                     query.put("car_id", car_id);
 
-                    new HTTPRequest(getString(R.string.api_base_url) + "/deletecar").setQueries(query)
+                    new HTTPRequest(getActivity(),getString(R.string.api_base_url) + "/deletecar").setQueries(query)
                             .setAuthToken(_auth0.getAccessToken(), _userProfile.getString("userid")).runAsync();
 
                     _carModels.remove(position);
@@ -398,7 +398,7 @@ public class CarManagerFragment extends Fragment implements RecyclerViewInterfac
                 JSONObjectWrapper query = new JSONObjectWrapper();
                 query.put("car_id", car_id);
 
-                new HTTPRequest(getString(R.string.api_base_url) + "/removemycaraccess").setQueries(query)
+                new HTTPRequest(getActivity(),getString(R.string.api_base_url) + "/removemycaraccess").setQueries(query)
                         .setAuthToken(_auth0.getAccessToken(), _userProfile.getString("userid")).runAsync();
 
                 _carModels.remove(position);
@@ -420,7 +420,7 @@ public class CarManagerFragment extends Fragment implements RecyclerViewInterfac
         JSONObjectWrapper query = new JSONObjectWrapper();
         query.put("car_id", _addMaintenanceDataJSON.getInt("car_id"));
 
-        new HTTPRequest(getString(R.string.api_base_url) + "/uploadCarImage").setMethod("POST").setQueries(query)
+        new HTTPRequest(getActivity(),getString(R.string.api_base_url) + "/uploadCarImage").setMethod("POST").setQueries(query)
                 .setContentType("image/jpeg").setPhotoURI(this.requireContext().getContentResolver(), _addMaintenanceDataJSON.getString("photoURI"))
                 .setAuthToken(_auth0.getAccessToken(), _userProfile.getString("userid")).setCallback(res -> {
                     JSONObjectWrapper resJSON = new JSONObjectWrapper(res);

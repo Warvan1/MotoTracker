@@ -1,5 +1,6 @@
 package com.example.mototracker;
 
+import android.app.Activity;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -80,7 +81,7 @@ public class CarManagerRecyclerViewAdapter extends RecyclerView.Adapter<CarManag
         JSONObjectWrapper query = new JSONObjectWrapper();
         query.put("car_id", _carModels.getJSONObjectWrapper(position).getInt("car_id"));
 
-        new HTTPRequest(_context.getResources().getString(R.string.api_base_url) + "/downloadCarImage").setQueries(query)
+        new HTTPRequest((Activity) _context,_context.getResources().getString(R.string.api_base_url) + "/downloadCarImage").setQueries(query)
                 .setAuthToken(_auth0.getAccessToken(), _userProfile.getString("userid")).setImageCallback(bitmap -> {
                     if(bitmap != null){
                         holder._carImageView.setImageBitmap(bitmap);

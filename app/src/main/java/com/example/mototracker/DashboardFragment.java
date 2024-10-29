@@ -99,7 +99,7 @@ public class DashboardFragment extends Fragment {
         Button addmaintenanceButton = view.findViewById(R.id.dashboard_add_maintenance_button);
         ImageView carPhoto = view.findViewById(R.id.dashboard_photo);
 
-        new HTTPRequest(getString(R.string.api_base_url) + "/getcurrentcar")
+        new HTTPRequest(getActivity(),getString(R.string.api_base_url) + "/getcurrentcar")
                 .setAuthToken(_auth0.getAccessToken(), _userProfile.getString("userid")).setCallback(res -> {
                     photoCard.setVisibility(View.GONE);
                     if(res.equals("null")){
@@ -168,7 +168,7 @@ public class DashboardFragment extends Fragment {
                     JSONObjectWrapper query = new JSONObjectWrapper();
                     query.put("car_id", _currentCarJSON.getInt("car_id"));
 
-                    new HTTPRequest(getString(R.string.api_base_url) + "/downloadCarImage").setQueries(query)
+                    new HTTPRequest(getActivity(),getString(R.string.api_base_url) + "/downloadCarImage").setQueries(query)
                             .setAuthToken(_auth0.getAccessToken(), _userProfile.getString("userid")).setImageCallback(bitmap -> {
                                 if(bitmap != null){
                                     photoCard.setVisibility(View.VISIBLE);

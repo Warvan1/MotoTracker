@@ -66,7 +66,7 @@ public class StatisticsFragment extends Fragment {
         _chartView = view.findViewById(R.id.statistics_chart);
 
         //get the current car object
-        new HTTPRequest(getString(R.string.api_base_url) + "/getcurrentcar")
+        new HTTPRequest(getActivity(),getString(R.string.api_base_url) + "/getcurrentcar")
                 .setAuthToken(_auth0.getAccessToken(), _userProfile.getString("userid")).setCallback(res -> {
                     if(res.equals("null")){
                         return;
@@ -107,7 +107,7 @@ public class StatisticsFragment extends Fragment {
         queries.put("filter", "Fuel");
         queries.put("statistics", 1);
 
-        new HTTPRequest(getString(R.string.api_base_url) + "/getmaintenancelog").setQueries(queries)
+        new HTTPRequest(getActivity(),getString(R.string.api_base_url) + "/getmaintenancelog").setQueries(queries)
                 .setAuthToken(_auth0.getAccessToken(), _userProfile.getString("userid")).setCallback(res -> {
                     if(res.equals("null")){
                         return;
